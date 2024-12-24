@@ -132,17 +132,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background transition-colors duration-300 relative">
       <main className="container mx-auto p-8 flex flex-col">
-        <div className="flex items-center gap-4">
-          <Image
-            src="/logo.png"
-            alt="Logo"
-            width={50}
-            height={50}
-            className="rounded-lg"
-          />
-          <h1 className="text-3xl font-space font-bold text-foreground">TaskFlow</h1>
-        </div>
-        
         <Suspense fallback={<div>Loading...</div>}>
           <TodoContent />
         </Suspense>
