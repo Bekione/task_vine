@@ -36,7 +36,6 @@ export const useTodoStore = create<State & Actions>()(
     }),
     {
       name: 'todo-storage',
-      skipHydration: true
     }
   )
 )
