@@ -1,7 +1,8 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import { nanoid } from "nanoid"
 import { TodoStatus, State, Actions, DEFAULT_TODO_STATUS } from '@/types/todo'
-import { persist } from 'zustand/middleware'
+
 
 export const useTodoStore = create<State & Actions>()(
   persist(
@@ -35,6 +36,7 @@ export const useTodoStore = create<State & Actions>()(
     }),
     {
       name: 'todo-storage',
+      skipHydration: true
     }
   )
 )
