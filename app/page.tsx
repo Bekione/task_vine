@@ -20,7 +20,7 @@ function TodoContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const showAddDialog = searchParams.get('add-todo') !== null
-  const { updateTodo, removeTodo, reorderTodo} = useTodoStore();
+  const { updateTodo, reorderTodo} = useTodoStore();
   const [activeTodo, setActiveTodo] = useState<Todo | null>(null)
 
   const todos = useTodoStore(state => state.todos)
