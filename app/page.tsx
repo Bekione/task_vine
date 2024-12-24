@@ -72,7 +72,7 @@ function TodoContent() {
             height={50}
             className="rounded-lg"
           />
-          <h1 className="text-3xl font-space font-bold text-foreground">Taskify</h1>
+          <h1 className="text-3xl font-space font-bold text-foreground">TaskVine</h1>
         </div>
         <div className="flex items-center gap-4">
           <ThemeToggle />
