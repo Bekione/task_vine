@@ -11,12 +11,12 @@ import { useTodos } from '@/hooks/use-todos'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Footer } from '@/components/footer'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { Todo, TodoStatus } from '@/types/todo'
 import { TodoCard } from '@/components/todo-card'
 import { TaskTimer } from '@/components/task-timer'
 
-export default function Home() {
+function TodoContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const showAddDialog = searchParams.get('add-todo') !== null
@@ -62,70 +62,90 @@ export default function Home() {
   }
 
   return (
+    <>
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            width={50}
+            height={50}
+            className="rounded-lg"
+          />
+          <h1 className="text-3xl font-space font-bold text-foreground">TaskFlow</h1>
+        </div>
+        <div className="flex items-center gap-4">
+          <ThemeToggle />
+          <Button
+            onClick={() => router.push('/?add-todo')}
+            className="bg-gradient-to-r from-blue-500 to-purple-500 hover:opacity-90 text-white"
+          >
+            <Plus className="mr-2" /> Add New Todo
+          </Button>
+        </div>
+      </div>
+
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCorners}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <TodoColumn
+            title="Todo"
+            status="todo"
+            todos={todos.filter((todo) => todo.status === 'todo')}
+            onDelete={deleteTodo}
+          />
+          <TodoColumn
+            title="In Progress"
+            status="in-progress"
+            todos={todos.filter((todo) => todo.status === 'in-progress')}
+            onDelete={deleteTodo}
+          />
+          <TodoColumn
+            title="Done"
+            status="done"
+            todos={todos.filter((todo) => todo.status === 'done')}
+            onDelete={deleteTodo}
+          />
+        </div>
+        <DragOverlay>
+          {activeTodo ? <TodoCard todo={activeTodo} onDelete={() => {}} /> : null}
+        </DragOverlay>
+      </DndContext>
+
+      <TaskTimer />
+
+      <AddTodoDialog
+        isOpen={showAddDialog}
+        onClose={() => router.push('/')}
+        onAdd={addTodo}
+      />
+    </>
+  )
+}
+
+export default function Home() {
+  return (
     <div className="min-h-screen bg-background transition-colors duration-300 relative">
       <main className="container mx-auto p-8 flex flex-col">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <Image
-              src="/logo.png"
-              alt="Logo"
-              width={50}
-              height={50}
-              className="rounded-lg"
-            />
-            <h1 className="text-3xl font-space font-bold text-foreground">TaskFlow</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <ThemeToggle />
-            <Button
-              onClick={() => router.push('/?add-todo')}
-              className="bg-gradient-to-r from-blue-500 to-purple-500 hover:opacity-90 text-white"
-            >
-              <Plus className="mr-2" /> Add New Todo
-            </Button>
-          </div>
+        <div className="flex items-center gap-4">
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            width={50}
+            height={50}
+            className="rounded-lg"
+          />
+          <h1 className="text-3xl font-space font-bold text-foreground">TaskFlow</h1>
         </div>
-
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCorners}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-          onDragCancel={handleDragCancel}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <TodoColumn
-              title="Todo"
-              status="todo"
-              todos={todos.filter((todo) => todo.status === 'todo')}
-              onDelete={deleteTodo}
-            />
-            <TodoColumn
-              title="In Progress"
-              status="in-progress"
-              todos={todos.filter((todo) => todo.status === 'in-progress')}
-              onDelete={deleteTodo}
-            />
-            <TodoColumn
-              title="Done"
-              status="done"
-              todos={todos.filter((todo) => todo.status === 'done')}
-              onDelete={deleteTodo}
-            />
-          </div>
-          <DragOverlay>
-            {activeTodo ? <TodoCard todo={activeTodo} onDelete={() => {}} /> : null}
-          </DragOverlay>
-        </DndContext>
-
-        <TaskTimer />
         
-
-        <AddTodoDialog
-          isOpen={showAddDialog}
-          onClose={() => router.push('/')}
-          onAdd={addTodo}
-        />
+        <Suspense fallback={<div>Loading...</div>}>
+          <TodoContent />
+        </Suspense>
       </main>
       <Footer />
     </div>
