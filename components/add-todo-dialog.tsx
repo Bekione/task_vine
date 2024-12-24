@@ -6,22 +6,24 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
+import { useTodoStore } from '@/lib/store'
 
 interface AddTodoDialogProps {
   isOpen: boolean
   onClose: () => void
-  onAdd: (title: string, description: string) => void
 }
 
-export function AddTodoDialog({ isOpen, onClose, onAdd }: AddTodoDialogProps) {
+export function AddTodoDialog({ isOpen, onClose }: AddTodoDialogProps) {
+  const addTodo = useTodoStore(state => state.addTodo)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const router = useRouter()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    if (typeof title !== 'string' || typeof description !== 'string') return
     if (title.trim()) {
-      onAdd(title, description)
+      addTodo(title, description)
       setTitle('')
       setDescription('')
       handleClose()
