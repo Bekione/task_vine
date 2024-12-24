@@ -32,7 +32,14 @@ export const useTodoStore = create<State & Actions>()(
                 todo.id === id ? { ...todo, status } : todo
             )
         })),
-        reorderTodo: (newTodos: State['todos']) => set({ todos: newTodos })
+        reorderTodo: (newTodos: State['todos']) => set({ todos: newTodos }),
+        editTodo: (id: string, title: string, description?: string) => set((state) => ({
+            todos: state.todos.map(todo => 
+                todo.id === id 
+                    ? { ...todo, title, description }
+                    : todo
+            )
+        }))
     }),
     {
       name: 'todo-storage',
