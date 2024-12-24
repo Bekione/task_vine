@@ -11,17 +11,22 @@ import { useTodos } from '@/hooks/use-todos'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Footer } from '@/components/footer'
 import Image from 'next/image'
-import { useState, Suspense } from 'react'
+import { useState, Suspense, useMemo } from 'react'
 import { Todo, TodoStatus } from '@/types/todo'
 import { TodoCard } from '@/components/todo-card'
 import { TaskTimer } from '@/components/task-timer'
+import { useTodoStore } from '@/lib/store'
 
 function TodoContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const showAddDialog = searchParams.get('add-todo') !== null
-  const { todos, addTodo, updateTodoStatus, deleteTodo, reorderTodos } = useTodos()
+  const { updateTodo, removeTodo, reorderTodo} = useTodoStore();
   const [activeTodo, setActiveTodo] = useState<Todo | null>(null)
+
+  const todos = useTodoStore(state => state.todos)
+  const todosByStatus = (status: TodoStatus) => 
+    useMemo(() => todos.filter(todo => todo.status === status), [todos, status])
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -47,11 +52,11 @@ function TodoContent() {
     if (!activeTodo) return
 
     if (overId === 'todo' || overId === 'in-progress' || overId === 'done') {
-      updateTodoStatus(activeId.toString(), overId as TodoStatus)
+      updateTodo(activeId.toString(), overId as TodoStatus)
     } else {
       const oldIndex = todos.findIndex((todo) => todo.id === activeId.toString())
       const newIndex = todos.findIndex((todo) => todo.id === overId)
-      reorderTodos(arrayMove(todos, oldIndex, newIndex))
+      reorderTodo(arrayMove(todos, oldIndex, newIndex))
     }
 
     setActiveTodo(null)
@@ -96,20 +101,17 @@ function TodoContent() {
           <TodoColumn
             title="Todo"
             status="todo"
-            todos={todos.filter((todo) => todo.status === 'todo')}
-            onDelete={deleteTodo}
+            todos={todosByStatus('todo')}
           />
           <TodoColumn
             title="In Progress"
             status="in-progress"
-            todos={todos.filter((todo) => todo.status === 'in-progress')}
-            onDelete={deleteTodo}
+            todos={todosByStatus('in-progress')}
           />
           <TodoColumn
             title="Done"
             status="done"
-            todos={todos.filter((todo) => todo.status === 'done')}
-            onDelete={deleteTodo}
+            todos={todosByStatus('done')}
           />
         </div>
         <DragOverlay>
@@ -122,7 +124,6 @@ function TodoContent() {
       <AddTodoDialog
         isOpen={showAddDialog}
         onClose={() => router.push('/')}
-        onAdd={addTodo}
       />
     </>
   )
