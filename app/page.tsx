@@ -1,5 +1,7 @@
 'use client'
 
+import { useState, useEffect, Suspense, useMemo } from 'react'
+import Image from 'next/image'
 import { DndContext, DragOverlay, closestCorners, KeyboardSensor, PointerSensor, useSensor, useSensors, DragStartEvent, DragEndEvent } from '@dnd-kit/core'
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { useSearchParams, useRouter } from 'next/navigation'
@@ -9,8 +11,6 @@ import { TodoColumn } from '@/components/todo-column'
 import { AddTodoDialog } from '@/components/add-todo-dialog'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Footer } from '@/components/footer'
-import Image from 'next/image'
-import { useState, Suspense, useMemo } from 'react'
 import { Todo, TodoStatus } from '@/types/todo'
 import { TodoCard } from '@/components/todo-card'
 import { TaskTimer } from '@/components/task-timer'
@@ -23,6 +23,10 @@ function TodoContent() {
   const { updateTodo, reorderTodo } = useTodoStore()
   const [activeTodo, setActiveTodo] = useState<Todo | null>(null)
   const todos = useTodoStore(state => state.todos)
+
+  useEffect(() => {
+    useTodoStore.persist.rehydrate()
+  })
 
   const todosByStatus = useMemo(() => {
     return (status: TodoStatus) => todos.filter(todo => todo.status === status)
@@ -75,7 +79,7 @@ function TodoContent() {
             alt="Logo"
             width={50}
             height={50}
-            className="rounded-lg"
+            className="rounded-lg w-auto h-auto"
           />
           <h1 className="text-3xl font-space font-bold text-foreground">TaskVine</h1>
         </div>
