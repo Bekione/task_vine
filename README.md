@@ -7,6 +7,7 @@ A modern, minimalist task management application built with Next.js and Zustand.
 ## ✨ Features
 
 - **Kanban-style Task Management**: Organize tasks across Todo, In Progress, and Done columns
+- **CRUD Operations**: Create, Read, Update, and Delete tasks with ease
 - **Drag & Drop Interface**: Seamlessly move tasks between different states
 - **Task Timer**: Track time spent on individual tasks
 - **Dark/Light Mode**: Built-in theme switching for comfortable viewing
@@ -14,7 +15,7 @@ A modern, minimalist task management application built with Next.js and Zustand.
 
 ## 🚀 Tech Stack
 
-- [Next.js 14](https://nextjs.org/) - React Framework
+- [Next.js 15](https://nextjs.org/) - React Framework
 - [Tailwind CSS](https://tailwindcss.com/) - Styling
 - [Zustand](https://zustand-demo.pmnd.rs/) - State Management
 - [Framer Motion](https://www.framer.com/motion/) - Animations and Transitions
