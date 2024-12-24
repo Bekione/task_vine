@@ -19,7 +19,7 @@ export const viewport = {
 }
 
 export const metadata = {
-  title: 'TaskFlow',
+  title: 'Taskify',
   description: 'A modern todo application for managing your tasks efficiently',
   manifest: '/site.webmanifest',
   icons: {
@@ -35,11 +35,11 @@ export const metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'TaskFlow',
+    title: 'Taskify',
   },
   other: {
     'mobile-web-app-capable': 'yes',
-    'application-name': 'TaskFlow',
+    'application-name': 'Taskify',
   },
 }
 
