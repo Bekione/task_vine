@@ -29,6 +29,7 @@ export function TodoCard({ todo, onDelete }: TodoCardProps) {
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
+    console.log("Deletion is happinging")
     if (isDeleting) return;
 
     setIsDeleting(true);
@@ -37,6 +38,7 @@ export function TodoCard({ todo, onDelete }: TodoCardProps) {
     setTimeout(() => {
       removeTodo(todo.id);
       onDelete?.(todo.id);
+      console.log("Deletion is done.")
     }, 200); // Match this duration with the Framer Motion `exit` animation time
   };
 
