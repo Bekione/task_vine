@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+// import { motion, AnimatePresence } from "framer-motion";
 import { Trash2, Edit } from "lucide-react";
 import { Todo, TodoStatus } from "@/types/todo";
 import { useTodoStore } from "@/lib/store";
