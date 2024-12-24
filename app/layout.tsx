@@ -14,6 +14,10 @@ const spaceGrotesk = Space_Grotesk({
   display: 'swap',
 })
 
+export const viewport = {
+  themeColor: '#ffffff',
+}
+
 export const metadata = {
   title: 'TaskFlow',
   description: 'A modern todo application for managing your tasks efficiently',
@@ -28,11 +32,6 @@ export const metadata = {
       { url: '/apple-touch-icon.png' },
     ],
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-  },
-  themeColor: '#ffffff',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
