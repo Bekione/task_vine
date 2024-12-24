@@ -22,4 +22,5 @@ export type Actions = {
   removeTodo: (id: string) => void
   updateTodo: (id: string, status: TodoStatus) => void
   reorderTodo: (newTodos: Todo[]) => void
+  editTodo: (id: string, title: string, description?: string) => void
 }
