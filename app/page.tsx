@@ -20,12 +20,13 @@ function TodoContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const showAddDialog = searchParams.get('add-todo') !== null
-  const { updateTodo, reorderTodo} = useTodoStore();
+  const { updateTodo, reorderTodo } = useTodoStore()
   const [activeTodo, setActiveTodo] = useState<Todo | null>(null)
-
   const todos = useTodoStore(state => state.todos)
-  const todosByStatus = (status: TodoStatus) => 
-    useMemo(() => todos.filter(todo => todo.status === status), [todos, status])
+
+  const todosByStatus = useMemo(() => {
+    return (status: TodoStatus) => todos.filter(todo => todo.status === status)
+  }, [todos])
 
   const sensors = useSensors(
     useSensor(PointerSensor),
