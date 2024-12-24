@@ -1,6 +1,6 @@
 'use client'
 
-import { DndContext, DragOverlay, closestCorners, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { DndContext, DragOverlay, closestCorners, KeyboardSensor, PointerSensor, useSensor, useSensors, DragStartEvent, DragEndEvent } from '@dnd-kit/core'
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -30,12 +30,12 @@ export default function Home() {
     })
   )
 
-  const handleDragStart = (event: any) => {
+  const handleDragStart = (event: DragStartEvent) => {
     const { active } = event
     setActiveTodo(todos.find(todo => todo.id === active.id) || null)
   }
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
 
     if (!over) return
@@ -47,9 +47,9 @@ export default function Home() {
     if (!activeTodo) return
 
     if (overId === 'todo' || overId === 'in-progress' || overId === 'done') {
-      updateTodoStatus(activeId, overId as TodoStatus)
+      updateTodoStatus(activeId.toString(), overId as TodoStatus)
     } else {
-      const oldIndex = todos.findIndex((todo) => todo.id === activeId)
+      const oldIndex = todos.findIndex((todo) => todo.id === activeId.toString())
       const newIndex = todos.findIndex((todo) => todo.id === overId)
       reorderTodos(arrayMove(todos, oldIndex, newIndex))
     }
