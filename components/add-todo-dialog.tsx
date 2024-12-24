@@ -1,11 +1,11 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTodoStore } from '@/lib/store'
 
 interface AddTodoDialogProps {
@@ -14,16 +14,37 @@ interface AddTodoDialogProps {
 }
 
 export function AddTodoDialog({ isOpen, onClose }: AddTodoDialogProps) {
+  const searchParams = useSearchParams()
+  const editId = searchParams.get('edit-todo')
   const addTodo = useTodoStore(state => state.addTodo)
+  const editTodo = useTodoStore(state => state.editTodo)
+  const todos = useTodoStore(state => state.todos)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const router = useRouter()
+
+  useEffect(() => {
+    if (editId) {
+      const todoToEdit = todos.find(todo => todo.id === editId)
+      if (todoToEdit) {
+        setTitle(todoToEdit.title)
+        setDescription(todoToEdit.description || '')
+      }
+    } else {
+      setTitle('')
+      setDescription('')
+    }
+  }, [editId, todos])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (typeof title !== 'string' || typeof description !== 'string') return
     if (title.trim()) {
-      addTodo(title, description)
+      if (editId) {
+        editTodo(editId, title, description)
+      } else {
+        addTodo(title, description)
+      }
       setTitle('')
       setDescription('')
       handleClose()
@@ -39,7 +60,7 @@ export function AddTodoDialog({ isOpen, onClose }: AddTodoDialogProps) {
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Add New Todo</DialogTitle>
+          <DialogTitle>{editId ? 'Edit Todo' : 'Add New Todo'}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
@@ -52,7 +73,9 @@ export function AddTodoDialog({ isOpen, onClose }: AddTodoDialogProps) {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <Button type="submit">Add Todo</Button>
+          <Button type="submit">
+            {editId ? 'Edit Todo' : 'Add Todo'}
+          </Button>
         </form>
       </DialogContent>
     </Dialog>
