@@ -2,7 +2,7 @@ import { Github, Linkedin } from 'lucide-react'
 
 export function Footer() {
   return (
-    <footer className="pt-6 text-center">
+    <footer className="pt-6 pb-4 text-center">
       <p className="text-sm text-gray-400 mb-2">
         By Bereket K.
       </p>
