@@ -19,7 +19,7 @@ import { useTodoStore } from '@/lib/store'
 function TodoContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const showAddDialog = searchParams.get('add-todo') !== null
+  const showAddDialog = searchParams.get('add-todo') !== null || searchParams.get('edit-todo') !== null
   const { updateTodo, reorderTodo } = useTodoStore()
   const [activeTodo, setActiveTodo] = useState<Todo | null>(null)
   const todos = useTodoStore(state => state.todos)
