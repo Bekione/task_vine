@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, Suspense, useMemo } from 'react'
+import { useState, Suspense, useMemo } from 'react'
 import Image from 'next/image'
 import { DndContext, DragOverlay, closestCorners, KeyboardSensor, PointerSensor, useSensor, useSensors, DragStartEvent, DragEndEvent } from '@dnd-kit/core'
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
@@ -23,10 +23,6 @@ function TodoContent() {
   const { updateTodo, reorderTodo } = useTodoStore()
   const [activeTodo, setActiveTodo] = useState<Todo | null>(null)
   const todos = useTodoStore(state => state.todos)
-
-  useEffect(() => {
-    useTodoStore.persist.rehydrate()
-  })
 
   const todosByStatus = useMemo(() => {
     return (status: TodoStatus) => todos.filter(todo => todo.status === status)
