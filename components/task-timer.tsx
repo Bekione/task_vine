@@ -41,7 +41,7 @@ export function TaskTimer() {
   }
 
   return (
-    <Card className="absolute bottom-2 right-2 w-full max-w-sm mx-auto">
+    <Card className="absolute bottom-2 right-2 w-fitmx-auto">
       <CardHeader>
         <CardTitle className="text-center">Task Timer</CardTitle>
       </CardHeader>
