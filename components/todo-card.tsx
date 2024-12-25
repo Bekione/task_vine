@@ -1,6 +1,6 @@
 "use client";
 
-// import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Trash2, Edit } from "lucide-react";
 import { Todo, TodoStatus } from "@/types/todo";
 import { useTodoStore } from "@/lib/store";
@@ -30,68 +30,62 @@ export function TodoCard({ todo, onDelete }: TodoCardProps) {
 
   const handleEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    e.stopPropagation();
     router.push(`/?edit-todo=${todo.id}`);
   };
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    e.stopPropagation();
-    console.log("Deletion is happinging")
     if (isDeleting) return;
-
     setIsDeleting(true);
+    removeTodo(todo.id);
+    onDelete?.(todo.id);
+  };
 
-    // Wait for animation to complete before removing from state
-    setTimeout(() => {
-      removeTodo(todo.id);
-      onDelete?.(todo.id);
-      console.log("Deletion is done.")
-    }, 200); // Match this duration with the Framer Motion `exit` animation time
+  const handleMouseDown = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
   };
 
   return (
-    // <AnimatePresence>
-      <div
-        // layout
-        // initial={{ opacity: 0, y: 20 }}
-        // animate={{ opacity: 1, y: 0 }}
-        // exit={{ opacity: 0, y: -20 }}
-        // transition={{ duration: 0.2 }} // Ensure this matches the `setTimeout` duration
-        className={`p-4 rounded-lg backdrop-blur-sm ${getStatusColor(
-          todo.status
-        )} 
-    shadow-lg transition-colors duration-300`}
-      >
-        <div className="flex justify-between items-start gap-2">
-          <div>
-            <h3 className="font-space font-bold text-foreground">
-              {todo.title}
-            </h3>
-            <p className="text-sm text-muted-foreground mt-1">
-              {todo.description}
-            </p>
-          </div>
-          <div className="flex gap-2">
-            {todo.status === 'todo' && (
-              <button
-                onClick={handleEdit}
-                className="text-gray-400 hover:text-blue-400 transition-colors"
-              >
-                <Edit size={18} />
-              </button>
-            )}
-            <button
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className={`text-gray-400 hover:text-red-400 transition-colors
-                ${isDeleting ? "opacity-50 cursor-not-allowed" : ""}`}
-            >
-              <Trash2 size={18} />
-            </button>
-          </div>
-        </div>
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.2 }}
+      className={`p-4 rounded-lg backdrop-blur-sm ${getStatusColor(todo.status)} 
+        shadow-lg transition-colors duration-300 relative`}
+    >
+      {/* Main Content Area - Draggable */}
+      <div className="drag-handle cursor-move">
+        <h3 className="w-10/12 font-space font-bold text-foreground break-words">
+          {todo.title}
+        </h3>
+        <p className="w-full text-sm text-muted-foreground mt-1 break-words">
+          {todo.description}
+        </p>
       </div>
-    // </AnimatePresence> 
+  
+      {/* Actions Area */}
+      <div className="absolute top-2 right-2 flex gap-2 z-50 pointer-events-auto" data-no-dnd>
+  {todo.status === "todo" && (
+    <button
+      onClick={handleEdit}
+      className="p-1 rounded-md bg-background/90 text-gray-400 hover:text-blue-400 transition-colors"
+    >
+      <Edit size={18} />
+    </button>
+  )}
+  <button
+    onClick={handleDelete}
+    disabled={isDeleting}
+    className={`p-1 rounded-md bg-background/90 text-gray-400 hover:text-red-400 transition-colors
+      ${isDeleting ? "opacity-50 cursor-not-allowed" : ""}`}
+  >
+    <Trash2 size={18} />
+  </button>
+</div>
+
+    </motion.div>
   );
+  
 }
