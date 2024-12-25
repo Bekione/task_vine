@@ -72,6 +72,14 @@ export function AddTodoDialog({ isOpen, onClose }: AddTodoDialogProps) {
             placeholder="Description..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            className='max-h-40'
+            rows={2}
+            style={{ resize: 'none' }}
+            onInput={(e) => {
+              const target = e.target as HTMLTextAreaElement;
+              target.style.height = ''; // Reset height
+              target.style.height = Math.min(target.scrollHeight, 160) + 'px'; // 160px matches max-h-40
+            }}
           />
           <Button type="submit">
             {editId ? 'Edit Todo' : 'Add Todo'}
