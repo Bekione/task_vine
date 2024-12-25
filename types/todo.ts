@@ -9,6 +9,14 @@ export interface Todo {
   description?: string
   status: TodoStatus
   createdAt: Date
+  timeSpent: number // Total seconds spent on this todo
+  timeLog: TimeLogEntry[] // History of time entries
+}
+
+export interface TimeLogEntry {
+  startTime: Date
+  endTime?: Date
+  duration: number // in seconds
 }
 
 export type State = {
@@ -23,4 +31,7 @@ export type Actions = {
   updateTodo: (id: string, status: TodoStatus) => void
   reorderTodo: (newTodos: Todo[]) => void
   editTodo: (id: string, title: string, description?: string) => void
+  startTaskTimer: (todoId: string) => void
+  stopTaskTimer: (todoId: string) => void
+  updateTimeSpent: (todoId: string, seconds: number) => void
 }
