@@ -28,9 +28,9 @@ export function TodoColumn({ title, status, todos }: TodoColumnProps) {
       <motion.div
         ref={setNodeRef}
         className={`flex-1 rounded-lg backdrop-blur-md bg-secondary/50 
-          border-2 transition-colors duration-200
+          border-2 transition-colors duration-200 shadow-lg
           ${isOver ? 'border-primary/50' : 'border-border'}
-          shadow-md`}
+          shadow-xl`}
       >
         <SortableContext items={todoIds} strategy={verticalListSortingStrategy}>
           <div className="h-[calc(100vh-280px)] overflow-y-auto p-4">
