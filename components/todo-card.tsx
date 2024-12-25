@@ -41,6 +41,13 @@ export function TodoCard({ todo, onDelete }: TodoCardProps) {
     onDelete?.(todo.id);
   };
 
+  const formatTime = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600)
+    const minutes = Math.floor((seconds % 3600) / 60)
+    const remainingSeconds = seconds % 60
+    return `${hours}h ${minutes}m ${remainingSeconds}s`
+  }
+
   return (
     <motion.div
       layout
@@ -59,6 +66,11 @@ export function TodoCard({ todo, onDelete }: TodoCardProps) {
         <p className="w-full text-sm text-muted-foreground mt-1 break-words">
           {todo.description}
         </p>
+        {todo.status === 'done' && todo.timeSpent > 0 && (
+          <p className="text-xs text-muted-foreground mt-2">
+            Time spent: {formatTime(todo.timeSpent)}
+          </p>
+        )}
       </div>
   
       {/* Actions Area */}
