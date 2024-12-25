@@ -41,10 +41,6 @@ export function TodoCard({ todo, onDelete }: TodoCardProps) {
     onDelete?.(todo.id);
   };
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-  };
-
   return (
     <motion.div
       layout
