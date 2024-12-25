@@ -27,7 +27,7 @@ export function SortableTodoCard({ todo }: SortableTodoCardProps) {
       type: 'todo',
       todo,
     }
-  })
+  });
 
   useEffect(() => {
     if (isDragging) {
@@ -41,7 +41,7 @@ export function SortableTodoCard({ todo }: SortableTodoCardProps) {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
-  }
+  };
 
   return (
     <div
@@ -49,10 +49,9 @@ export function SortableTodoCard({ todo }: SortableTodoCardProps) {
       style={style}
       {...attributes}
       {...listeners}
-      className="touch-none relative"
+      className="touch-none"
     >
       <TodoCard todo={todo} />
     </div>
-  )
+  );
 }
-
