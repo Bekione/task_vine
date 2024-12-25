@@ -2,7 +2,7 @@
 
 import { useState, Suspense, useMemo } from "react";
 import Image from "next/image";
-import { DndContext, DragOverlay, closestCorners, KeyboardSensor, PointerSensor, useSensor, useSensors, DragStartEvent, DragEndEvent, PointerSensorOptions } from '@dnd-kit/core';
+import { DndContext, DragOverlay, closestCorners, KeyboardSensor, PointerSensor, useSensor, useSensors, DragStartEvent, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
