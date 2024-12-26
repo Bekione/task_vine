@@ -27,6 +27,7 @@ import { TaskTimer } from "@/components/task-timer";
 import { useTodoStore } from "@/lib/store";
 import { ConfirmationDialog } from "@/components/confirmation-dialog";
 import { useToast } from "@/components/ui/use-toast";
+import { Header } from "@/components/header";
 
 // Create a custom pointer sensor
 class CustomPointerSensor extends PointerSensor {
@@ -142,7 +143,7 @@ function TodoContent() {
   // Add effect to simulate data loading
   useEffect(() => {
     try {
-      // Simulate loading time for local storage data
+      // Simulate loading time for local storage data untill I emplement a real database :)
       setTimeout(() => {
         setIsLoading(false);
       }, 1000);
@@ -154,30 +155,7 @@ function TodoContent() {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
-          <Image
-            src="/logo.png"
-            alt="Logo"
-            width={50}
-            height={50}
-            className="rounded-lg w-auto h-auto"
-          />
-          <h1 className="hidden md:flex text-3xl font-space font-bold text-foreground">
-            TaskVine
-          </h1>
-        </div>
-        <div className="flex items-center gap-4">
-          <ThemeToggle />
-          <Button
-            onClick={() => router.push("/?add-todo")}
-            className="bg-gradient-to-r from-[#3dc6ee] to-[#75d7f1] hover:opacity-90 text-white"
-          >
-            <Plus className="mr-2" /> Add New Todo
-          </Button>
-        </div>
-      </div>
-
+      <Header />
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
