@@ -34,6 +34,11 @@ export interface State {
   timer: TimerState;
 }
 
+export interface ImportResult {
+  error?: string;
+  success?: boolean;
+}
+
 export interface Actions {
   addTodo: (params: AddTodoParams) => void;
   dragTodo: (id: string | null) => void;
@@ -49,7 +54,7 @@ export interface Actions {
   setCurrentTime: (time: number) => void;
   resetTimer: () => void;
   exportData: () => void;
-  importData: (file: File) => Promise<void>;
+  importData: (file: File) => Promise<ImportResult>;
   clearTodos: () => void;
 }
 
