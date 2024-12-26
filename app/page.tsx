@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, Suspense, useMemo, useEffect } from "react";
-import Image from "next/image";
 import {
   DndContext,
   DragOverlay,
@@ -15,11 +14,8 @@ import {
 } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { TodoColumn } from "@/components/todo-column";
 import { AddTodoDialog } from "@/components/add-todo-dialog";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { Footer } from "@/components/footer";
 import { Todo, TodoStatus } from "@/types/todo";
 import { TodoCard } from "@/components/todo-card";
@@ -147,7 +143,7 @@ function TodoContent() {
       setTimeout(() => {
         setIsLoading(false);
       }, 1000);
-    } catch (err) {
+    } catch {
       setError('Failed to load todos');
       setIsLoading(false);
     }
