@@ -25,6 +25,8 @@ import { Todo, TodoStatus } from "@/types/todo";
 import { TodoCard } from "@/components/todo-card";
 import { TaskTimer } from "@/components/task-timer";
 import { useTodoStore } from "@/lib/store";
+import { ConfirmationDialog } from "@/components/confirmation-dialog";
+import { useToast } from "@/components/ui/use-toast";
 
 // Create a custom pointer sensor
 class CustomPointerSensor extends PointerSensor {
@@ -48,9 +50,11 @@ function TodoContent() {
   const showAddDialog =
     searchParams.get("add-todo") !== null ||
     searchParams.get("edit-todo") !== null;
-  const { updateTodo, reorderTodo } = useTodoStore();
+  const { updateTodo, reorderTodo, removeTodo, addTodo } = useTodoStore();
   const [activeTodo, setActiveTodo] = useState<Todo | null>(null);
   const todos = useTodoStore((state) => state.todos);
+  const [todoToDelete, setTodoToDelete] = useState<Todo | null>(null);
+  const { toast } = useToast();
 
   const todosByStatus = useMemo(() => {
     return (status: TodoStatus) =>
@@ -97,6 +101,42 @@ function TodoContent() {
     setActiveTodo(null);
   };
 
+  const handleDeleteTodo = (todo: Todo) => {
+    setTodoToDelete(todo);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!todoToDelete) return;
+
+    const todoBackup = { ...todoToDelete };
+    removeTodo(todoToDelete.id);
+
+    toast({
+      title: "Todo deleted",
+      description: "The todo has been removed",
+      action: (
+        <button
+          onClick={(e) => {
+            (e.target as HTMLButtonElement).disabled = true;
+            addTodo({
+              title: todoBackup.title,
+              description: todoBackup.description,
+              priority: todoBackup.priority,
+              status: todoBackup.status,
+              timeSpent: todoBackup.timeSpent
+            });
+            toast({ duration: 0 });
+          }}
+          className="text-sm font-medium underline underline-offset-4 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Undo
+        </button>
+      ),
+    });
+
+    setTodoToDelete(null);
+  };
+
   return (
     <>
       <div className="flex items-center justify-between mb-8">
@@ -135,16 +175,19 @@ function TodoContent() {
             title="Todo"
             status="todo"
             todos={todosByStatus("todo")}
+            onDeleteTodo={handleDeleteTodo}
           />
           <TodoColumn
             title="In Progress"
             status="in-progress"
             todos={todosByStatus("in-progress")}
+            onDeleteTodo={handleDeleteTodo}
           />
           <TodoColumn
             title="Done"
             status="done"
             todos={todosByStatus("done")}
+            onDeleteTodo={handleDeleteTodo}
           />
         </div>
         <DragOverlay>
@@ -157,6 +200,14 @@ function TodoContent() {
       </DndContext>
 
       <AddTodoDialog isOpen={showAddDialog} onClose={() => router.push("/")} />
+
+      <ConfirmationDialog
+        isOpen={!!todoToDelete}
+        onClose={() => setTodoToDelete(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Todo"
+        description="Are you sure you want to delete this todo? This action cannot be undone."
+      />
     </>
   );
 }
@@ -164,7 +215,7 @@ function TodoContent() {
 export default function Home() {
   return (
     <div className="min-h-screen bg-background transition-colors duration-300 relative">
-      <main className="container mx-auto p-8 flex flex-col">
+      <main className="container mx-auto p-8 pb-2 flex flex-col">
         <Suspense fallback={<div>Loading...</div>}>
           <TodoContent />
         </Suspense>
