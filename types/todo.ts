@@ -50,6 +50,7 @@ export interface Actions {
   resetTimer: () => void;
   exportData: () => void;
   importData: (file: File) => Promise<void>;
+  clearTodos: () => void;
 }
 
 // Update DEFAULT_TODO_STATUS to include priority
