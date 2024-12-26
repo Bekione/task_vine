@@ -40,22 +40,24 @@ export function SettingsMenu() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    try {
-      await importData(file);
-      toast({
-        title: "Data imported",
-        description: "Your todos have been imported successfully",
-        variant: "default",
-      });
-    } catch {
-      toast({
-        title: "Import failed",
-        description: "There was an error importing your todos",
-        variant: "destructive",
-      });
+    const result = await importData(file);
+
+    if (result.error) {
+        toast({
+            title: "Import failed",
+            description: result.error as string,
+            variant: "destructive",
+        });
+    } else {
+        toast({
+            title: "Data imported",
+            description: "Your todos have been imported successfully",
+            variant: "default",
+        });
     }
+    
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+        fileInputRef.current.value = '';
     }
   };
 
