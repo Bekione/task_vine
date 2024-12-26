@@ -22,9 +22,16 @@ export interface TimeLogEntry {
   duration: number // in seconds
 }
 
+export interface TimerState {
+  selectedTodoId: string | null;
+  isRunning: boolean;
+  currentTime: number;
+}
+
 export type State = {
   todos: Todo[],
-  draggedTodo: string | null
+  draggedTodo: string | null,
+  timer: TimerState
 }
 
 export type Actions = {
@@ -37,6 +44,10 @@ export type Actions = {
   startTaskTimer: (todoId: string) => void
   stopTaskTimer: (todoId: string) => void
   updateTimeSpent: (todoId: string, seconds: number) => void
+  setSelectedTodo: (todoId: string | null) => void
+  setTimerRunning: (isRunning: boolean) => void
+  setCurrentTime: (time: number) => void
+  resetTimer: () => void
 }
 
 // Update DEFAULT_TODO_STATUS to include priority
