@@ -6,7 +6,6 @@ import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { SortableTodoCard } from './sortable-todo-card'
 import React, { useMemo, useState } from 'react'
-import { useVirtualizer } from '@tanstack/react-virtual'
 
 interface TodoColumnProps {
   title: string
