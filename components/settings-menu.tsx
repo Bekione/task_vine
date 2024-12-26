@@ -28,7 +28,7 @@ export function SettingsMenu() {
         description: "Your todos have been imported successfully",
         variant: "default",
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Import failed",
         description: "There was an error importing your todos",
