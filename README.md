@@ -2,7 +2,7 @@
 
 A modern, feature-rich task management application built with Next.js and Zustand.
 
-![TaskVine App Screenshot](public/screenshot.png)
+![TaskVine App Screenshot](public/og-image.png)
 
 ## ✨ Features
 
@@ -28,11 +28,13 @@ A modern, feature-rich task management application built with Next.js and Zustan
 
 ## 🚀 Tech Stack
 
-- [Next.js 14](https://nextjs.org/) - React Framework
+- [Next.js 15](https://nextjs.org/) - React Framework
 - [Tailwind CSS](https://tailwindcss.com/) - Styling
 - [Zustand](https://zustand-demo.pmnd.rs/) - State Management
+- [Framer Motion](https://www.framer.com/motion/) - Animations
 - [dnd-kit](https://dndkit.com/) - Drag and Drop
 - [Radix UI](https://www.radix-ui.com/) - UI Components
+- [Next PWA](https://nextjs.org/docs/app/building-your-application/optimizing/offline-and-cache-assets) - PWA Support
 - [TypeScript](https://www.typescriptlang.org/) - Type Safety
 - [Lucide Icons](https://lucide.dev/) - Icons
 
