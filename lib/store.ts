@@ -9,6 +9,11 @@ export const useTodoStore = create<State & Actions>()(
     (set, get) => ({
         todos: [],
         draggedTodo: null,
+        timer: {
+            selectedTodoId: null,
+            isRunning: false,
+            currentTime: 0
+        },
         addTodo: (title: string, description?: string, priority: PriorityLevel = DEFAULT_PRIORITY) => set((state) => ({
             todos: [
                 ...state.todos, 
@@ -34,20 +39,31 @@ export const useTodoStore = create<State & Actions>()(
             const todo = state.todos.find(t => t.id === id);
             if (!todo) return { todos: state.todos };
 
+            if (id === state.timer.selectedTodoId) {
+                if (status === 'done') {
+                    set((state) => ({
+                        timer: {
+                            selectedTodoId: null,
+                            isRunning: false,
+                            currentTime: 0
+                        }
+                    }));
+                } else if (status === 'todo') {
+                    set((state) => ({
+                        timer: {
+                            selectedTodoId: null,
+                            isRunning: false,
+                            currentTime: 0
+                        }
+                    }));
+                }
+            }
+
             return {
                 todos: state.todos.map(t => {
                     if (t.id === id) {
-                        // Reset time when moving back to todo
                         if (status === 'todo') {
                             return { ...t, status, timeSpent: 0, timeLog: [] };
-                        }
-                        // Keep existing time when moving to in-progress
-                        if (status === 'in-progress') {
-                            return { ...t, status };
-                        }
-                        // Stop timer when moving to done
-                        if (status === 'done') {
-                            return { ...t, status };
                         }
                         return { ...t, status };
                     }
@@ -114,6 +130,40 @@ export const useTodoStore = create<State & Actions>()(
                 todo.id === id ? { ...todo, priority } : todo
             )
         })),
+        setSelectedTodo: (todoId: string | null) => set((state) => ({
+            timer: {
+                ...state.timer,
+                selectedTodoId: todoId,
+                currentTime: todoId ? (get().todos.find(t => t.id === todoId)?.timeSpent || 0) : 0
+            }
+        })),
+        setTimerRunning: (isRunning: boolean) => set((state) => ({
+            timer: { ...state.timer, isRunning }
+        })),
+        setCurrentTime: (time: number) => set((state) => ({
+            timer: { ...state.timer, currentTime: time }
+        })),
+        resetTimer: () => set((state) => ({
+            timer: { ...state.timer, currentTime: 0, isRunning: false }
+        })),
+        exportData: () => {
+            const data = get().todos;
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `taskvine-export-${new Date().toISOString()}.json`;
+            a.click();
+        },
+        importData: async (file: File) => {
+            try {
+                const text = await file.text();
+                const data = JSON.parse(text);
+                set({ todos: data });
+            } catch (error) {
+                console.error('Error importing data:', error);
+            }
+        },
     }),
     {
       name: 'todo-storage',
