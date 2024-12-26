@@ -12,7 +12,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={toggleTheme}
-      className="rounded-full"
+      className=""
     >
       {theme === 'dark' ? (
         <Sun className="h-5 w-5" />
