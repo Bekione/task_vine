@@ -77,10 +77,12 @@ export function TodoCard({ todo, onDelete }: TodoCardProps) {
     >
       {/* Main Content Area - Draggable */}
       <div className="drag-handle cursor-move">
-        <h3 className="w-10/12 font-space font-bold text-foreground break-words">
+        <h3 className={`w-10/12 font-space font-bold text-foreground break-words ${
+          todo.status === "done" ? "line-through" : ""
+        }`}>
           {todo.title}
         </h3>
-        <p className="w-full text-sm text-muted-foreground mt-2 break-words">
+        <p className="w-full text-sm h-5 text-muted-foreground mt-2 break-words">
           {todo.description}
         </p>
         {todo.status === "done" && todo.timeSpent > 0 && (
