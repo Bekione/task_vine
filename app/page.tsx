@@ -145,8 +145,6 @@ function TodoContent() {
         </DragOverlay>
       </DndContext>
 
-      <TaskTimer />
-
       <AddTodoDialog isOpen={showAddDialog} onClose={() => router.push("/")} />
     </>
   );
@@ -161,6 +159,7 @@ export default function Home() {
         </Suspense>
       </main>
       <Footer />
+      <TaskTimer />
     </div>
   );
 }
