@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense, useMemo } from "react";
+import { useState, Suspense, useMemo, useEffect } from "react";
 import Image from "next/image";
 import {
   DndContext,
@@ -55,6 +55,8 @@ function TodoContent() {
   const todos = useTodoStore((state) => state.todos);
   const [todoToDelete, setTodoToDelete] = useState<Todo | null>(null);
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const todosByStatus = useMemo(() => {
     return (status: TodoStatus) =>
@@ -137,6 +139,19 @@ function TodoContent() {
     setTodoToDelete(null);
   };
 
+  // Add effect to simulate data loading
+  useEffect(() => {
+    try {
+      // Simulate loading time for local storage data
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+    } catch (err) {
+      setError('Failed to load todos');
+      setIsLoading(false);
+    }
+  }, []);
+
   return (
     <>
       <div className="flex items-center justify-between mb-8">
@@ -176,18 +191,24 @@ function TodoContent() {
             status="todo"
             todos={todosByStatus("todo")}
             onDeleteTodo={handleDeleteTodo}
+            isLoading={isLoading}
+            error={error}
           />
           <TodoColumn
             title="In Progress"
             status="in-progress"
             todos={todosByStatus("in-progress")}
             onDeleteTodo={handleDeleteTodo}
+            isLoading={isLoading}
+            error={error}
           />
           <TodoColumn
             title="Done"
             status="done"
             todos={todosByStatus("done")}
             onDeleteTodo={handleDeleteTodo}
+            isLoading={isLoading}
+            error={error}
           />
         </div>
         <DragOverlay>
