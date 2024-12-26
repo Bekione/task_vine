@@ -21,8 +21,43 @@ export const viewport = {
 }
 
 export const metadata = {
-  title: 'TaskVine',
-  description: 'A modern todo application for managing your tasks efficiently',
+  title: 'TaskVine - Modern Task Management',
+  description: 'A modern, feature-rich task management application with Kanban board, time tracking, and more.',
+  metadataBase: new URL('https://taskvine.vercel.app'),
+  openGraph: {
+    title: 'TaskVine - Modern Task Management',
+    description: 'Organize tasks with an intuitive Kanban board, track time, and more.',
+    url: 'https://taskvine.vercel.app',
+    siteName: 'TaskVine',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'TaskVine Screenshot',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'TaskVine - Modern Task Management',
+    description: 'Organize tasks with an intuitive Kanban board, track time, and more.',
+    images: ['/og-image.png'],
+    creator: '@bekione23',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   manifest: '/site.webmanifest',
   icons: {
     icon: [
