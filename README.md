@@ -2,7 +2,7 @@
 
 A modern, feature-rich task management application built with Next.js and Zustand.
 
-![TaskVine App Screenshot](public/og-image.png)
+![TaskVine App Screenshot](public/taskvine-snap.png)
 
 ## ✨ Features
 
@@ -94,7 +94,3 @@ Created by Bereket K.
 ## 🌟 Support
 
 Give a ⭐️ if you like this project!
-
-## 🔄 Updates
-
-Check the [Changelog](CHANGELOG.md) for latest updates.
