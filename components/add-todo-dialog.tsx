@@ -10,6 +10,7 @@ import { useTodoStore } from '@/lib/store'
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group"
 import { Label } from './ui/label'
 import { PriorityLevel } from "@/types/todo"
+import { useToast } from "@/components/ui/use-toast"
 
 interface AddTodoDialogProps {
   isOpen: boolean
@@ -26,6 +27,7 @@ export function AddTodoDialog({ isOpen, onClose }: AddTodoDialogProps) {
   const [description, setDescription] = useState('')
   const [priority, setPriority] = useState<PriorityLevel>('none')
   const router = useRouter()
+  const { toast } = useToast()
 
   useEffect(() => {
     if (editId) {
@@ -44,15 +46,27 @@ export function AddTodoDialog({ isOpen, onClose }: AddTodoDialogProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (typeof title !== 'string' || typeof description !== 'string') return
-    if (title.trim()) {
-      if (editId) {
-        editTodo(editId, title, description, priority)
-      } else {
-        addTodo(title, description, priority)
-      }
-      handleClose()
+    if (!title.trim()) return
+
+    if (editId) {
+      editTodo(editId, title, description, priority)
+      toast({
+        title: "Todo updated",
+        description: "Your todo has been updated successfully"
+      })
+    } else {
+      addTodo({
+        title,
+        description,
+        priority
+      })
+      toast({
+        title: "Todo created",
+        description: "Your new todo has been created successfully"
+      })
     }
+
+    handleClose()
   }
 
   const handleClose = () => {
