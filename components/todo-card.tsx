@@ -7,6 +7,7 @@ import { useTodoStore } from "@/lib/store";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge } from "./ui/badge";
+import { useToast } from "@/hooks/use-toast";
 
 interface TodoCardProps {
   todo: Todo;
@@ -16,7 +17,9 @@ interface TodoCardProps {
 export const TodoCard = React.memo(function TodoCard({ todo, onDelete }: TodoCardProps) {
   const router = useRouter();
   const removeTodo = useTodoStore((state) => state.removeTodo);
+  const addTodo = useTodoStore((state) => state.addTodo);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { toast } = useToast();
 
   const getStatusColor = (status: TodoStatus) => {
     switch (status) {
@@ -34,11 +37,9 @@ export const TodoCard = React.memo(function TodoCard({ todo, onDelete }: TodoCar
     router.push(`/?edit-todo=${todo.id}`);
   };
 
-  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (isDeleting) return;
-    setIsDeleting(true);
-    removeTodo(todo.id);
+    e.stopPropagation(); // Stop event propagation
     onDelete?.(todo.id);
   };
 
@@ -126,7 +127,7 @@ export const TodoCard = React.memo(function TodoCard({ todo, onDelete }: TodoCar
         {todo.status === "todo" && (
           <button
             onClick={handleEdit}
-            className="flex items-center justify-center p-1 rounded-md bg-background/90 text-gray-400 hover:text-blue-400 transition-colors"
+            className="flex items-center justify-center p-1 rounded-md bg-background/70 text-gray-400 hover:text-blue-400 transition-colors"
           >
             <Edit size={18} />
           </button>
@@ -134,8 +135,8 @@ export const TodoCard = React.memo(function TodoCard({ todo, onDelete }: TodoCar
         <button
           onClick={handleDelete}
           disabled={isDeleting}
-          className={`flex items-center justify-center p-1 rounded-md bg-background/90 text-gray-400 hover:text-red-400 transition-colors
-      ${isDeleting ? "opacity-50 cursor-not-allowed" : ""}`}
+          className={`flex items-center justify-center p-1 rounded-md bg-background/70 text-gray-400 hover:text-red-400 transition-colors
+          ${isDeleting ? "opacity-50 cursor-not-allowed" : ""}`}
         >
           <Trash2 size={18} />
         </button>
