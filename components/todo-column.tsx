@@ -8,7 +8,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { SortableTodoCard } from "./sortable-todo-card";
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface TodoColumnProps {
@@ -31,6 +31,8 @@ export function TodoColumn({
   const { setNodeRef, isOver } = useDroppable({
     id: status,
   });
+  
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Sort todos by priority (high -> medium -> low -> none)
   const sortedTodos = useMemo(() => {
@@ -65,33 +67,30 @@ export function TodoColumn({
   const renderContent = () => {
     if (error) {
       return (
-        <div className="h-[calc(100vh-280px)] max-h-full p-4 flex items-center justify-center">
+        <div className="flex items-center justify-center h-full">
           <p className="text-destructive">Error: {error}</p>
         </div>
       );
     }
 
     return (
-      <div className="h-[calc(100vh-280px)] max-h-full overflow-y-auto p-4">
-        <div className="space-y-4 min-h-full overflow-hidden">
-          {sortedTodos.length > 0 ? (
-            sortedTodos.map((todo) => (
-              <SortableTodoCard
-                key={todo.id}
-                todo={todo}
-                onDelete={onDeleteTodo}
-              />
-            ))
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <p className="text-muted-foreground text-sm">
-                {getEmptyMessage(status)}
-              </p>
-            </div>
-          )}
-          <div className="h-2" />
-        </div>
-      </div>
+      <>
+        {sortedTodos.length > 0 ? (
+          sortedTodos.map((todo) => (
+            <SortableTodoCard
+              key={todo.id}
+              todo={todo}
+              onDelete={onDeleteTodo}
+            />
+          ))
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-muted-foreground text-sm">
+              {getEmptyMessage(status)}
+            </p>
+          </div>
+        )}
+      </>
     );
   };
 
@@ -108,18 +107,22 @@ export function TodoColumn({
           shadow-xl`}
       >
         <SortableContext items={todoIds} strategy={verticalListSortingStrategy}>
-          <div className="h-[calc(100vh-280px)] max-h-[500px]">
-            {isLoading ? (
-              <div className="h-[calc(100vh-280px)] max-h-full p-4">
-                <div className="space-y-4">
-                  {[1, 2, 3].map((i) => (
+          <div 
+            ref={scrollContainerRef}
+            className="h-[calc(100vh-280px)] max-h-[500px] overflow-y-auto scroll-smooth"
+          >
+            <div className="h-full p-4">
+              <div className="space-y-4">
+                {isLoading ? (
+                  [1, 2, 3].map((i) => (
                     <Skeleton className="h-24 w-full" key={i} />
-                  ))}
-                </div>
+                  ))
+                ) : (
+                  renderContent()
+                )}
               </div>
-            ) : (
-              renderContent()
-            )}
+              <div className="h-4"></div>
+            </div>
           </div>
         </SortableContext>
       </motion.div>
