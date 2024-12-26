@@ -8,10 +8,11 @@ import { useTodoStore } from '@/lib/store'
 import { useEffect } from 'react'
 
 interface SortableTodoCardProps {
-  todo: Todo
+  todo: Todo;
+  onDelete?: (todo: Todo) => void;
 }
 
-export function SortableTodoCard({ todo }: SortableTodoCardProps) {
+export function SortableTodoCard({ todo, onDelete }: SortableTodoCardProps) {
   const dragTodo = useTodoStore(state => state.dragTodo)
   
   const {
@@ -51,7 +52,10 @@ export function SortableTodoCard({ todo }: SortableTodoCardProps) {
       {...listeners}
       className="touch-none"
     >
-      <TodoCard todo={todo} />
+      <TodoCard 
+        todo={todo} 
+        onDelete={onDelete ? () => onDelete(todo) : undefined}
+      />
     </div>
   );
 }
