@@ -1,68 +1,101 @@
 "use client";
 
-import { DndContext, DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core'
-import { TodoColumn } from '@/components/todo-column'
-import { useTodoStore } from '@/lib/store'
-import { AddTodoDialog } from '@/components/add-todo-dialog'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { DragOverlay } from '@dnd-kit/core'
-import { TodoCard } from '@/components/todo-card'
-import { useEffect, useState } from 'react'
-import { TodoStatus } from '@/types/todo'
-import Image from 'next/image'
+import { useState, Suspense, useMemo } from "react";
+import Image from "next/image";
+import {
+  DndContext,
+  DragOverlay,
+  closestCorners,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragStartEvent,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { TodoColumn } from "@/components/todo-column";
+import { AddTodoDialog } from "@/components/add-todo-dialog";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Footer } from "@/components/footer";
+import { Todo, TodoStatus } from "@/types/todo";
+import { TodoCard } from "@/components/todo-card";
+import { TaskTimer } from "@/components/task-timer";
+import { useTodoStore } from "@/lib/store";
+
+// Create a custom pointer sensor
+class CustomPointerSensor extends PointerSensor {
+  static activators = [
+    {
+      eventName: "onPointerDown" as const, // Explicit literal type for 'eventName'
+      handler: ({ nativeEvent }: { nativeEvent: PointerEvent }) => {
+        // Prevent drag if the target is within an element with 'data-no-dnd'
+        if ((nativeEvent.target as HTMLElement).closest("[data-no-dnd]")) {
+          return false;
+        }
+        return true;
+      },
+    },
+  ];
+}
 
 function TodoContent() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const showAddDialog = searchParams.has('add-todo')
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const showAddDialog =
+    searchParams.get("add-todo") !== null ||
+    searchParams.get("edit-todo") !== null;
+  const { updateTodo, reorderTodo } = useTodoStore();
+  const [activeTodo, setActiveTodo] = useState<Todo | null>(null);
+  const todos = useTodoStore((state) => state.todos);
 
-  const todos = useTodoStore(state => state.todos)
-  const draggedTodo = useTodoStore(state => state.draggedTodo)
-  const dragTodo = useTodoStore(state => state.dragTodo)
-  const updateTodo = useTodoStore(state => state.updateTodo)
-  const reorderTodo = useTodoStore(state => state.reorderTodo)
+  const todosByStatus = useMemo(() => {
+    return (status: TodoStatus) =>
+      todos.filter((todo) => todo.status === status);
+  }, [todos]);
 
-  // Simulate loading state
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 1000)
-
-    return () => clearTimeout(timer)
-  }, [])
-
-  const columns: { title: string; status: TodoStatus }[] = [
-    { title: 'Todo', status: 'todo' },
-    { title: 'In Progress', status: 'in-progress' },
-    { title: 'Done', status: 'done' },
-  ]
+  const sensors = useSensors(
+    useSensor(CustomPointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const handleDragStart = (event: DragStartEvent) => {
-    dragTodo(event.active.id as string)
-  }
+    const { active } = event;
+    setActiveTodo(todos.find((todo) => todo.id === active.id) || null);
+  };
 
-  const handleDragEnd = () => {
-    dragTodo(null)
-  }
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
 
-  const handleDragOver = (event: DragOverEvent) => {
-    const { active, over } = event
-    if (!over) return
+    if (!over) return;
 
-    const activeId = active.id
-    const overId = over.id
+    const activeId = active.id;
+    const overId = over.id;
 
-    if (activeId === overId) return
+    const activeTodo = todos.find((todo) => todo.id === activeId);
+    if (!activeTodo) return;
 
-    const activeTodo = todos.find(todo => todo.id === activeId)
-    const overStatus = overId as TodoStatus
-
-    if (activeTodo && overStatus) {
-      updateTodo(activeTodo.id, overStatus)
+    if (overId === "todo" || overId === "in-progress" || overId === "done") {
+      updateTodo(activeId.toString(), overId as TodoStatus);
+    } else {
+      const oldIndex = todos.findIndex(
+        (todo) => todo.id === activeId.toString()
+      );
+      const newIndex = todos.findIndex((todo) => todo.id === overId);
+      reorderTodo(arrayMove(todos, oldIndex, newIndex));
     }
-  }
+
+    setActiveTodo(null);
+  };
+
+  const handleDragCancel = () => {
+    setActiveTodo(null);
+  };
 
   return (
     <>
@@ -73,38 +106,51 @@ function TodoContent() {
             alt="Logo"
             width={50}
             height={50}
-            className="rounded-lg"
+            className="rounded-lg w-auto h-auto"
           />
-          <h1 className="text-4xl font-space font-bold text-foreground">
+          <h1 className="hidden md:flex text-3xl font-space font-bold text-foreground">
             TaskVine
           </h1>
         </div>
-        <button
-          onClick={() => router.push('/?add-todo')}
-          className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-        >
-          Add Todo
-        </button>
+        <div className="flex items-center gap-4">
+          <ThemeToggle />
+          <Button
+            onClick={() => router.push("/?add-todo")}
+            className="bg-gradient-to-r from-[#3dc6ee] to-[#75d7f1] hover:opacity-90 text-white"
+          >
+            <Plus className="mr-2" /> Add New Todo
+          </Button>
+        </div>
       </div>
 
-      <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragOver={handleDragOver}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {columns.map(({ title, status }) => (
-            <TodoColumn
-              key={status}
-              title={title}
-              status={status}
-              todos={todos.filter(todo => todo.status === status)}
-              isLoading={isLoading}
-              error={error}
-            />
-          ))}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCorners}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <TodoColumn
+            title="Todo"
+            status="todo"
+            todos={todosByStatus("todo")}
+          />
+          <TodoColumn
+            title="In Progress"
+            status="in-progress"
+            todos={todosByStatus("in-progress")}
+          />
+          <TodoColumn
+            title="Done"
+            status="done"
+            todos={todosByStatus("done")}
+          />
         </div>
-
         <DragOverlay>
-          {draggedTodo ? (
+          {activeTodo ? (
             <div className="transform rotate-3">
-              <TodoCard todo={todos.find(t => t.id === draggedTodo)!} />
+              <TodoCard todo={activeTodo} onDelete={() => {}} />
             </div>
           ) : null}
         </DragOverlay>
@@ -112,15 +158,19 @@ function TodoContent() {
 
       <AddTodoDialog isOpen={showAddDialog} onClose={() => router.push("/")} />
     </>
-  )
+  );
 }
 
-export default function Page() {
+export default function Home() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background transition-colors duration-300 relative">
       <main className="container mx-auto p-8 flex flex-col">
-        <TodoContent />
+        <Suspense fallback={<div>Loading...</div>}>
+          <TodoContent />
+        </Suspense>
       </main>
+      <Footer />
+      <TaskTimer />
     </div>
-  )
+  );
 }
