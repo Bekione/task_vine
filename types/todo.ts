@@ -28,26 +28,26 @@ export interface TimerState {
   currentTime: number;
 }
 
-export type State = {
-  todos: Todo[],
-  draggedTodo: string | null,
-  timer: TimerState
+export interface State {
+  todos: Todo[];
+  draggedTodo: string | null;
+  timer: TimerState;
 }
 
-export type Actions = {
-  addTodo: (title: string, description?: string, priority?: PriorityLevel) => void
-  dragTodo: (id: string | null) => void
-  removeTodo: (id: string) => void
-  updateTodo: (id: string, status: TodoStatus) => void
-  reorderTodo: (newTodos: Todo[]) => void
-  editTodo: (id: string, title: string, description?: string, priority?: PriorityLevel) => void
-  startTaskTimer: (todoId: string) => void
-  stopTaskTimer: (todoId: string) => void
-  updateTimeSpent: (todoId: string, seconds: number) => void
-  setSelectedTodo: (todoId: string | null) => void
-  setTimerRunning: (isRunning: boolean) => void
-  setCurrentTime: (time: number) => void
-  resetTimer: () => void
+export interface Actions {
+  addTodo: (params: AddTodoParams) => void;
+  dragTodo: (id: string | null) => void;
+  removeTodo: (id: string) => void;
+  updateTodo: (id: string, status: TodoStatus) => void;
+  reorderTodo: (newTodos: Todo[]) => void;
+  editTodo: (id: string, title: string, description?: string, priority?: PriorityLevel) => void;
+  startTaskTimer: (todoId: string) => void;
+  stopTaskTimer: (todoId: string) => void;
+  updateTimeSpent: (todoId: string, seconds: number) => void;
+  setSelectedTodo: (todoId: string | null) => void;
+  setTimerRunning: (isRunning: boolean) => void;
+  setCurrentTime: (time: number) => void;
+  resetTimer: () => void;
 }
 
 // Update DEFAULT_TODO_STATUS to include priority
@@ -58,3 +58,11 @@ export const DEFAULT_TODO = {
 
 // Update the default values
 export const DEFAULT_PRIORITY: PriorityLevel = 'medium'
+
+export interface AddTodoParams {
+  title: string;
+  description?: string;
+  priority?: PriorityLevel;
+  status?: TodoStatus;
+  timeSpent?: number;
+}
