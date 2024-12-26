@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Trash2, Edit } from "lucide-react";
 import { PriorityLevel, Todo, TodoStatus } from "@/types/todo";
 import { useTodoStore } from "@/lib/store";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge } from "./ui/badge";
 
@@ -13,7 +13,7 @@ interface TodoCardProps {
   onDelete?: (id: string) => void;
 }
 
-export function TodoCard({ todo, onDelete }: TodoCardProps) {
+export const TodoCard = React.memo(function TodoCard({ todo, onDelete }: TodoCardProps) {
   const router = useRouter();
   const removeTodo = useTodoStore((state) => state.removeTodo);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -142,4 +142,14 @@ export function TodoCard({ todo, onDelete }: TodoCardProps) {
       </div>
     </motion.div>
   );
-}
+}, (prevProps, nextProps) => {
+  // Only re-render if these properties change
+  return (
+    prevProps.todo.id === nextProps.todo.id &&
+    prevProps.todo.title === nextProps.todo.title &&
+    prevProps.todo.description === nextProps.todo.description &&
+    prevProps.todo.status === nextProps.todo.status &&
+    prevProps.todo.priority === nextProps.todo.priority &&
+    prevProps.todo.timeSpent === nextProps.todo.timeSpent
+  );
+});
