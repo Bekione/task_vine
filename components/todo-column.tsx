@@ -108,7 +108,7 @@ export function TodoColumn({
           shadow-xl`}
       >
         <SortableContext items={todoIds} strategy={verticalListSortingStrategy}>
-          <div className="h-[calc(100vh-280px)] p-4">
+          <div className="h-[calc(100vh-280px)]">
             {isLoading ? (
               <div className="h-[calc(100vh-280px)] p-4">
                 <div className="space-y-4">
