@@ -4,7 +4,6 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Trash2, Edit } from "lucide-react";
 import { PriorityLevel, Todo, TodoStatus } from "@/types/todo";
-
 import { useRouter } from "next/navigation";
 import { Badge } from "./ui/badge";
 
