@@ -48,6 +48,8 @@ export interface Actions {
   setTimerRunning: (isRunning: boolean) => void;
   setCurrentTime: (time: number) => void;
   resetTimer: () => void;
+  exportData: () => void;
+  importData: (file: File) => Promise<void>;
 }
 
 // Update DEFAULT_TODO_STATUS to include priority
