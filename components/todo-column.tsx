@@ -65,14 +65,14 @@ export function TodoColumn({
   const renderContent = () => {
     if (error) {
       return (
-        <div className="h-[calc(100vh-280px)] p-4 flex items-center justify-center">
+        <div className="h-[calc(100vh-280px)] max-h-full p-4 flex items-center justify-center">
           <p className="text-destructive">Error: {error}</p>
         </div>
       );
     }
 
     return (
-      <div className="h-[calc(100vh-280px)] overflow-y-auto p-4">
+      <div className="h-[calc(100vh-280px)] max-h-full overflow-y-auto p-4">
         <div className="space-y-4 min-h-full overflow-hidden">
           {sortedTodos.length > 0 ? (
             sortedTodos.map((todo) => (
@@ -108,9 +108,9 @@ export function TodoColumn({
           shadow-xl`}
       >
         <SortableContext items={todoIds} strategy={verticalListSortingStrategy}>
-          <div className="h-[calc(100vh-280px)]">
+          <div className="h-[calc(100vh-280px)] max-h-[500px]">
             {isLoading ? (
-              <div className="h-[calc(100vh-280px)] p-4">
+              <div className="h-[calc(100vh-280px)] max-h-full p-4">
                 <div className="space-y-4">
                   {[1, 2, 3].map((i) => (
                     <Skeleton className="h-24 w-full" key={i} />
