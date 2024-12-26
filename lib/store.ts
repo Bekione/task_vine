@@ -13,7 +13,7 @@ export const useTodoStore = create<State & Actions>()(
             isRunning: false,
             currentTime: 0
         },
-        addTodo: (params: AddTodoParams) => set((state) => ({
+        addTodo: (params: AddTodoParams) => set(({ todos }) => ({
             todos: [
                 {
                     id: nanoid(),
@@ -25,10 +25,10 @@ export const useTodoStore = create<State & Actions>()(
                     createdAt: new Date(),
                     timeLog: []
                 },
-                ...state.todos,
+                ...todos,
             ],
         })),
-        dragTodo: ( id: string | null) => set({ draggedTodo: id }),
+        dragTodo: (id: string | null) => set(() => ({ draggedTodo: id })),
         removeTodo: (id: string) => {
             const currentTodos = get().todos
             const newTodos = currentTodos.filter(todo => todo.id !== id)
@@ -40,7 +40,7 @@ export const useTodoStore = create<State & Actions>()(
 
             if (id === state.timer.selectedTodoId) {
                 if (status === 'done') {
-                    set((state) => ({
+                    set(() => ({
                         timer: {
                             selectedTodoId: null,
                             isRunning: false,
@@ -48,7 +48,7 @@ export const useTodoStore = create<State & Actions>()(
                         }
                     }));
                 } else if (status === 'todo') {
-                    set((state) => ({
+                    set(() => ({
                         timer: {
                             selectedTodoId: null,
                             isRunning: false,
