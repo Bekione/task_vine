@@ -51,14 +51,14 @@ export function TodoCard({ todo, onDelete }: TodoCardProps) {
 
   const getBorderColor = (priority: PriorityLevel) => {
     switch (priority) {
-      case 'high':
-        return 'border-l-red-500';
-      case 'medium':
-        return 'border-l-yellow-500';
-      case 'low':
-        return 'border-l-blue-500';
+      case "high":
+        return "border-l-red-500";
+      case "medium":
+        return "border-l-yellow-500";
+      case "low":
+        return "border-l-blue-500";
       default:
-        return 'border-l-transparent';
+        return "border-l-transparent";
     }
   };
 
@@ -74,12 +74,21 @@ export function TodoCard({ todo, onDelete }: TodoCardProps) {
       )} 
         shadow-lg transition-colors duration-300 relative
         border-l-[6px] ${getBorderColor(todo.priority)}`}
+      tabIndex={0}
+      role="article"
+      aria-label={`Todo: ${todo.title}`}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') handleEdit(e as any);
+        if (e.key === 'Delete') handleDelete(e as any);
+      }}
     >
       {/* Main Content Area - Draggable */}
       <div className="drag-handle cursor-move">
-        <h3 className={`w-10/12 font-space font-bold text-foreground break-words ${
-          todo.status === "done" ? "line-through" : ""
-        }`}>
+        <h3
+          className={`w-10/12 font-space font-bold text-foreground break-words ${
+            todo.status === "done" ? "line-through" : ""
+          }`}
+        >
           {todo.title}
         </h3>
         <p className="w-full text-sm h-5 text-muted-foreground mt-2 break-words">
@@ -92,19 +101,22 @@ export function TodoCard({ todo, onDelete }: TodoCardProps) {
         )}
       </div>
 
-      {todo.priority !== 'none' && (
-          <div className="absolute bottom-2 right-2">
-            <Badge title="Priority" variant={
-              todo.priority === 'high' 
-                ? 'destructive' 
-                : todo.priority === 'medium' 
-                  ? 'secondary' 
-                  : 'default'
-            }>
-              {todo.priority}
-            </Badge>
-          </div>
-        )}
+      {todo.priority !== "none" && (
+        <div className="absolute bottom-2 right-2">
+          <Badge
+            title="Priority"
+            variant={
+              todo.priority === "high"
+                ? "destructive"
+                : todo.priority === "medium"
+                ? "secondary"
+                : "default"
+            }
+          >
+            {todo.priority}
+          </Badge>
+        </div>
+      )}
 
       {/* Actions Area */}
       <div
@@ -114,7 +126,7 @@ export function TodoCard({ todo, onDelete }: TodoCardProps) {
         {todo.status === "todo" && (
           <button
             onClick={handleEdit}
-            className="p-1 rounded-md bg-background/90 text-gray-400 hover:text-blue-400 transition-colors"
+            className="flex items-center justify-center p-1 rounded-md bg-background/90 text-gray-400 hover:text-blue-400 transition-colors"
           >
             <Edit size={18} />
           </button>
@@ -122,7 +134,7 @@ export function TodoCard({ todo, onDelete }: TodoCardProps) {
         <button
           onClick={handleDelete}
           disabled={isDeleting}
-          className={`p-1 rounded-md bg-background/90 text-gray-400 hover:text-red-400 transition-colors
+          className={`flex items-center justify-center p-1 rounded-md bg-background/90 text-gray-400 hover:text-red-400 transition-colors
       ${isDeleting ? "opacity-50 cursor-not-allowed" : ""}`}
         >
           <Trash2 size={18} />
