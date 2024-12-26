@@ -1,26 +1,40 @@
 # TaskVine 🌿
 
-A modern, minimalist task management application built with Next.js and Zustand.
+A modern, feature-rich task management application built with Next.js and Zustand.
 
 ![TaskVine App Screenshot](public/screenshot.png)
 
 ## ✨ Features
 
-- **Kanban-style Task Management**: Organize tasks across Todo, In Progress, and Done columns
-- **CRUD Operations**: Create, Read, Update, and Delete tasks with ease
+### Task Management
+- **Kanban-style Board**: Organize tasks across Todo, In Progress, and Done columns
 - **Drag & Drop Interface**: Seamlessly move tasks between different states
+- **Priority Levels**: Set task priorities (High, Medium, Low)
 - **Task Timer**: Track time spent on individual tasks
-- **Dark/Light Mode**: Built-in theme switching for comfortable viewing
-- **Responsive Design**: Works perfectly on both desktop and mobile devices
+- **Rich Task Details**: Add descriptions and track creation dates
+
+### Data Management
+- **Data Import/Export**: Backup and restore your todos
+- **Local Storage**: Persistent data storage
+- **Bulk Actions**: Clear all todos with confirmation
+
+### User Experience
+- **Responsive Design**: Works perfectly on desktop, tablet, and mobile
+- **Dark/Light Mode**: Built-in theme switching
+- **Keyboard Shortcuts**: Quick access to common actions
+- **Toast Notifications**: Informative feedback for all actions
+- **Confirmation Dialogs**: Prevent accidental deletions
+- **PWA Support**: Install as a standalone app
 
 ## 🚀 Tech Stack
 
-- [Next.js 15](https://nextjs.org/) - React Framework
+- [Next.js 14](https://nextjs.org/) - React Framework
 - [Tailwind CSS](https://tailwindcss.com/) - Styling
 - [Zustand](https://zustand-demo.pmnd.rs/) - State Management
-- [Framer Motion](https://www.framer.com/motion/) - Animations and Transitions
-- [dnd-kit](https://dndkit.com/) - Drag and Drop Functionality
+- [dnd-kit](https://dndkit.com/) - Drag and Drop
+- [Radix UI](https://www.radix-ui.com/) - UI Components
 - [TypeScript](https://www.typescriptlang.org/) - Type Safety
+- [Lucide Icons](https://lucide.dev/) - Icons
 
 ## 🛠️ Installation
 
@@ -40,34 +54,45 @@ npm install
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+4. Open [http://localhost:3000](http://localhost:3000)
 
 ## 💻 Usage
 
-- Click "Add New Todo" to create a new task
-- Drag and drop tasks between columns to update their status
-- Use the task timer to track time spent on tasks
-- Click the theme toggle to switch between light and dark modes
-- Delete tasks using the trash icon
+### Basic Operations
+- Add new todos with `Add New Todo` button or `⌘/Ctrl + K`
+- Drag and drop todos between columns
+- Click todo title to edit
+- Use the timer to track time spent
 
-## 📝 Contributing
+### Data Management
+- Export todos via Settings menu
+- Import todos from JSON file
+- Clear all todos with confirmation
+
+### Keyboard Shortcuts
+- `⌘/Ctrl + K`: Add new todo
+- More shortcuts coming soon!
+
+## 🔒 Privacy
+
+TaskVine stores all data locally in your browser. No data is sent to any server.
+
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
 ## 📜 License
 
-This project is licensed under the MIT License - see the [LICENSE](/LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ## 👏 Credits
 
 Created by Bereket K.
 
-## 🤝 Support
+## 🌟 Support
 
 Give a ⭐️ if you like this project!
+
+## 🔄 Updates
+
+Check the [Changelog](CHANGELOG.md) for latest updates.
