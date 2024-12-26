@@ -87,7 +87,7 @@ export const TodoCard = React.memo(
           >
             {todo.title}
           </h3>
-          <p className="w-full text-sm h-5 text-muted-foreground mt-2 break-words">
+          <p className="w-full text-sm text-muted-foreground mt-2 break-words">
             {todo.description}
           </p>
           {todo.status === "done" && todo.timeSpent > 0 && (
