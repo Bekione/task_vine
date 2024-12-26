@@ -1,25 +1,36 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import { Todo, TodoStatus } from '@/types/todo'
-import { useDroppable } from '@dnd-kit/core'
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import { SortableTodoCard } from './sortable-todo-card'
-import React, { useMemo, useState } from 'react'
+import { motion } from "framer-motion";
+import { Todo, TodoStatus } from "@/types/todo";
+import { useDroppable } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { SortableTodoCard } from "./sortable-todo-card";
+import React, { useMemo } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface TodoColumnProps {
-  title: string
-  status: TodoStatus
-  todos: Todo[]
+  title: string;
+  status: TodoStatus;
+  todos: Todo[];
+  onDeleteTodo: (todo: Todo) => void;
+  isLoading?: boolean;
+  error?: string | null;
 }
 
-export function TodoColumn({ title, status, todos }: TodoColumnProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
+export function TodoColumn({
+  title,
+  status,
+  todos,
+  onDeleteTodo,
+  isLoading = false,
+  error = null,
+}: TodoColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: status,
-  })
+  });
 
   // Sort todos by priority (high -> medium -> low -> none)
   const sortedTodos = useMemo(() => {
@@ -30,41 +41,59 @@ export function TodoColumn({ title, status, todos }: TodoColumnProps) {
       none: 3,
     };
 
-    return [...todos].sort((a, b) => 
-      priorityOrder[a.priority] - priorityOrder[b.priority]
+    return [...todos].sort(
+      (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]
     );
   }, [todos]);
 
-  const todoIds = useMemo(() => sortedTodos.map(todo => todo.id), [sortedTodos]);
+  const todoIds = useMemo(
+    () => sortedTodos.map((todo) => todo.id),
+    [sortedTodos]
+  );
 
   const getEmptyMessage = (status: TodoStatus) => {
     switch (status) {
-      case 'todo':
-        return 'No todos yet';
-      case 'in-progress':
-        return 'No tasks in progress';
-      case 'done':
-        return 'No completed tasks';
+      case "todo":
+        return "No todos yet";
+      case "in-progress":
+        return "No tasks in progress";
+      case "done":
+        return "No completed tasks";
     }
   };
 
-  // Add loading skeleton
-  if (isLoading) {
-    return (
-      <div className="flex-1 w-full min-w-[300px] animate-pulse">
-        {/* Loading skeleton content */}
-      </div>
-    );
-  }
+  const renderContent = () => {
+    if (error) {
+      return (
+        <div className="h-[calc(100vh-280px)] p-4 flex items-center justify-center">
+          <p className="text-destructive">Error: {error}</p>
+        </div>
+      );
+    }
 
-  // Add error message
-  if (error) {
     return (
-      <div className="flex-1 w-full min-w-[300px] text-destructive">
-        <p>Error: {error}</p>
+      <div className="h-[calc(100vh-280px)] overflow-y-auto p-4">
+        <div className="space-y-4 min-h-full overflow-hidden">
+          {sortedTodos.length > 0 ? (
+            sortedTodos.map((todo) => (
+              <SortableTodoCard
+                key={todo.id}
+                todo={todo}
+                onDelete={onDeleteTodo}
+              />
+            ))
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <p className="text-muted-foreground text-sm">
+                {getEmptyMessage(status)}
+              </p>
+            </div>
+          )}
+          <div className="h-2" />
+        </div>
       </div>
     );
-  }
+  };
 
   return (
     <div className="flex-1 w-full min-w-[300px] flex flex-col">
@@ -75,32 +104,25 @@ export function TodoColumn({ title, status, todos }: TodoColumnProps) {
         ref={setNodeRef}
         className={`flex-1 rounded-lg backdrop-blur-md bg-secondary/50 
           border-2 transition-colors duration-200 shadow-lg
-          ${isOver ? 'border-primary/50' : 'border-border'}
+          ${isOver ? "border-primary/50" : "border-border"}
           shadow-xl`}
       >
         <SortableContext items={todoIds} strategy={verticalListSortingStrategy}>
-          <div className="h-[calc(100vh-280px)] overflow-y-auto p-4">
-            <div className="space-y-4 min-h-full overflow-hidden">
-              {sortedTodos.length > 0 ? (
-                sortedTodos.map((todo) => (
-                  <SortableTodoCard 
-                    key={todo.id} 
-                    todo={todo}
-                  />
-                ))
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <p className="text-muted-foreground text-sm">
-                    {getEmptyMessage(status)}
-                  </p>
+          <div className="h-[calc(100vh-280px)] p-4">
+            {isLoading ? (
+              <div className="h-[calc(100vh-280px)] p-4">
+                <div className="space-y-4">
+                  {[1, 2, 3].map((i) => (
+                    <Skeleton className="h-24 w-full" key={i} />
+                  ))}
                 </div>
-              )}
-              <div className="h-2" />
-            </div>
+              </div>
+            ) : (
+              renderContent()
+            )}
           </div>
         </SortableContext>
       </motion.div>
     </div>
-  )
+  );
 }
-
