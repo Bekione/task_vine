@@ -7,6 +7,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { useState, useEffect } from 'react'
 import { useTodoStore } from '@/lib/store'
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group"
+import { Label } from './ui/label'
+import { PriorityLevel } from "@/types/todo"
 
 interface AddTodoDialogProps {
   isOpen: boolean
@@ -21,6 +24,7 @@ export function AddTodoDialog({ isOpen, onClose }: AddTodoDialogProps) {
   const todos = useTodoStore(state => state.todos)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [priority, setPriority] = useState<PriorityLevel>('none')
   const router = useRouter()
 
   useEffect(() => {
@@ -29,10 +33,12 @@ export function AddTodoDialog({ isOpen, onClose }: AddTodoDialogProps) {
       if (todoToEdit) {
         setTitle(todoToEdit.title)
         setDescription(todoToEdit.description || '')
+        setPriority(todoToEdit.priority)
       }
     } else {
       setTitle('')
       setDescription('')
+      setPriority('none')
     }
   }, [editId, todos])
 
@@ -41,12 +47,10 @@ export function AddTodoDialog({ isOpen, onClose }: AddTodoDialogProps) {
     if (typeof title !== 'string' || typeof description !== 'string') return
     if (title.trim()) {
       if (editId) {
-        editTodo(editId, title, description)
+        editTodo(editId, title, description, priority)
       } else {
-        addTodo(title, description)
+        addTodo(title, description, priority)
       }
-      setTitle('')
-      setDescription('')
       handleClose()
     }
   }
@@ -81,6 +85,31 @@ export function AddTodoDialog({ isOpen, onClose }: AddTodoDialogProps) {
               target.style.height = Math.min(target.scrollHeight, 160) + 'px'; // 160px matches max-h-40
             }}
           />
+          <div className="space-y-2">
+            <Label>Priority</Label>
+            <RadioGroup
+              value={priority}
+              onValueChange={(value: PriorityLevel) => setPriority(value)}
+              className="flex gap-4"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="high" id="high" />
+                <Label htmlFor="high">High</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="medium" id="medium" />
+                <Label htmlFor="medium">Medium</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="low" id="low" />
+                <Label htmlFor="low">Low</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="none" id="none" />
+                <Label htmlFor="none">None</Label>
+              </div>
+            </RadioGroup>
+          </div>
           <Button type="submit">
             {editId ? 'Edit Todo' : 'Add Todo'}
           </Button>
