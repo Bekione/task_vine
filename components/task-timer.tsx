@@ -9,25 +9,28 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { cn } from '@/lib/utils'
 
 export function TaskTimer() {
-  const [time, setTime] = useState(0)
-  const [isRunning, setIsRunning] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
-  const [selectedTodoId, setSelectedTodoId] = useState<string | null>(null)
   const todos = useTodoStore(state => state.todos)
+  const timer = useTodoStore(state => state.timer)
+  const setSelectedTodo = useTodoStore(state => state.setSelectedTodo)
+  const setTimerRunning = useTodoStore(state => state.setTimerRunning)
+  const setCurrentTime = useTodoStore(state => state.setCurrentTime)
+  const resetTimer = useTodoStore(state => state.resetTimer)
   const updateTimeSpent = useTodoStore(state => state.updateTimeSpent)
 
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined;
 
-    if (isRunning && selectedTodoId) {
-      const todo = todos.find(t => t.id === selectedTodoId);
+    if (timer.isRunning && timer.selectedTodoId) {
+      const todo = todos.find(t => t.id === timer.selectedTodoId);
       if (todo && todo.status === 'in-progress') {
         interval = setInterval(() => {
-          updateTimeSpent(selectedTodoId, time + 1);
-          setTime(prev => prev + 1);
+          const newTime = timer.currentTime + 1;
+          updateTimeSpent(timer.selectedTodoId!, newTime);
+          setCurrentTime(newTime);
         }, 1000);
       } else {
-        setIsRunning(false);
+        setTimerRunning(false);
       }
     }
 
@@ -36,34 +39,44 @@ export function TaskTimer() {
         clearInterval(interval);
       }
     };
-  }, [isRunning, selectedTodoId, time, todos, updateTimeSpent]);
+  }, [timer.isRunning, timer.selectedTodoId, timer.currentTime, todos, updateTimeSpent, setCurrentTime, setTimerRunning]);
 
   const toggleTimer = () => {
-    if (!selectedTodoId) return
-    setIsRunning(!isRunning)
-  }
+    if (!timer.selectedTodoId) return;
+    setTimerRunning(!timer.isRunning);
+  };
 
-  const resetTimer = () => {
-    setTime(0)
-    setIsRunning(false)
-  }
+  const handleReset = () => {
+    if (timer.selectedTodoId) {
+      updateTimeSpent(timer.selectedTodoId, 0);
+    }
+    resetTimer();
+  };
 
   const formatTime = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600)
-    const minutes = Math.floor((seconds % 3600) / 60)
-    const remainingSeconds = seconds % 60
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
 
-    return `${hours.toString().padStart(2, '0')}:${minutes
-      .toString()
-      .padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
-  }
+    return (
+      <div className="font-mono">
+        <span className="inline-block w-[2ch] text-right">{hours.toString().padStart(2, '0')}</span>
+        <span>:</span>
+        <span className="inline-block w-[2ch] text-right">{minutes.toString().padStart(2, '0')}</span>
+        <span>:</span>
+        <span className="inline-block w-[2ch] text-right">{remainingSeconds.toString().padStart(2, '0')}</span>
+      </div>
+    );
+  };
 
-  const inProgressTodos = todos.filter(todo => todo.status === 'in-progress')
+  const inProgressTodos = todos.filter(todo => todo.status === 'in-progress');
 
   return (
     <>
       {/* Mobile Toggle Button */}
       <Button
+        title='Task Timer'
+        aria-label="Toggle task timer"
         variant="outline"
         size="icon"
         className="fixed bottom-4 right-4 rounded-full h-12 w-12 md:hidden shadow-lg bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
@@ -99,13 +112,10 @@ export function TaskTimer() {
         </CardHeader>
         <CardContent>
           <Select
-            value={selectedTodoId || ''}
+            aria-label="Select task to track"
+            value={timer.selectedTodoId || ''}
             onValueChange={(value: string) => {
-              setSelectedTodoId(value)
-              const todo = todos.find(t => t.id === value)
-              if (todo) {
-                setTime(todo.timeSpent || 0)
-              }
+              setSelectedTodo(value);
             }}
           >
             <SelectTrigger className="mb-4">
@@ -126,19 +136,21 @@ export function TaskTimer() {
             </SelectContent>
           </Select>
 
-          <div className="text-3xl font-bold text-center mb-3">{formatTime(time)}</div>
+          <div className="text-3xl font-bold text-center mb-3">
+            {formatTime(timer.currentTime)}
+          </div>
           <div className="flex justify-center space-x-2">
             <Button 
               onClick={toggleTimer} 
               variant="outline"
-              disabled={!selectedTodoId}
+              disabled={!timer.selectedTodoId}
             >
-              {isRunning ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+              {timer.isRunning ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
             </Button>
             <Button 
-              onClick={resetTimer} 
+              onClick={handleReset} 
               variant="outline"
-              disabled={!selectedTodoId}
+              disabled={!timer.selectedTodoId}
             >
               <RotateCcw className="h-4 w-4" />
             </Button>
