@@ -1,7 +1,9 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { nanoid } from "nanoid"
-import { TodoStatus, State, Actions, DEFAULT_TODO_STATUS, PriorityLevel, DEFAULT_PRIORITY, AddTodoParams } from '@/types/todo'
+import { TodoStatus, State, Actions, DEFAULT_TODO_STATUS, PriorityLevel, DEFAULT_PRIORITY, AddTodoParams, ImportResult } from '@/types/todo'
+import { isValidTodo } from "./validators";
+import { toast } from "@/components/ui/use-toast"
 
 export const useTodoStore = create<State & Actions>()(
   persist(
@@ -154,13 +156,47 @@ export const useTodoStore = create<State & Actions>()(
             a.download = `taskvine-export-${new Date().toISOString()}.json`;
             a.click();
         },
-        importData: async (file: File) => {
+        importData: async (file: File): Promise<ImportResult> => {
             try {
+                if (file.size > 5 * 1024 * 1024) {
+                    return { error: "File size too large. Maximum size is 5MB." };
+                }
+
+                if (!file.type.includes('application/json')) {
+                    return { error: "Invalid file type. Please upload a JSON file." };
+                }
+
                 const text = await file.text();
                 const data = JSON.parse(text);
-                set({ todos: data });
+
+                if (!Array.isArray(data)) {
+                    return { error: "Invalid data format. Expected an array of todos." };
+                }
+
+                const processedData = data.map(todo => ({
+                    ...todo,
+                    createdAt: new Date(todo.createdAt)
+                }));
+
+                const validTodos = processedData.filter(todo => isValidTodo(todo));
+                
+                if (validTodos.length === 0) {
+                    return { error: "No valid todos found in the file." };
+                }
+
+                if (validTodos.length !== data.length) {
+                    toast({
+                        title: "Warning",
+                        description: `${data.length - validTodos.length} invalid todos were skipped.`,
+                        variant: "default"
+                    });
+                }
+
+                set({ todos: validTodos });
+                return { success: true };
             } catch (error) {
                 console.error('Error importing data:', error);
+                return { error: "Failed to process the file. Please try again." };
             }
         },
         clearTodos: () => set({ todos: [] }),
