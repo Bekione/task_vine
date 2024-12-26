@@ -1,6 +1,7 @@
 import { Inter, Space_Grotesk } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
+import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({
   subsets: ['latin'],
@@ -52,6 +53,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} dark`}>
       <body className={`min-h-screen ${inter.className}`}>
         <ThemeProvider>{children}</ThemeProvider>
+        <Toaster />
       </body>
     </html>
   )
