@@ -1,8 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { nanoid } from "nanoid"
-import { TodoStatus, State, Actions, DEFAULT_TODO_STATUS, PriorityLevel, DEFAULT_PRIORITY } from '@/types/todo'
-
+import { TodoStatus, State, Actions, DEFAULT_TODO_STATUS, PriorityLevel, DEFAULT_PRIORITY, AddTodoParams } from '@/types/todo'
 
 export const useTodoStore = create<State & Actions>()(
   persist(
@@ -14,20 +13,20 @@ export const useTodoStore = create<State & Actions>()(
             isRunning: false,
             currentTime: 0
         },
-        addTodo: (title: string, description?: string, priority: PriorityLevel = DEFAULT_PRIORITY) => set((state) => ({
+        addTodo: (params: AddTodoParams) => set((state) => ({
             todos: [
-                ...state.todos, 
                 {
-                    id: nanoid(), 
-                    title, 
-                    description, 
-                    status: DEFAULT_TODO_STATUS,
-                    priority,
+                    id: nanoid(),
+                    title: params.title,
+                    description: params.description || '',
+                    status: params.status || DEFAULT_TODO_STATUS,
+                    priority: params.priority || DEFAULT_PRIORITY,
+                    timeSpent: params.timeSpent || 0,
                     createdAt: new Date(),
-                    timeSpent: 0,
                     timeLog: []
-                }
-            ]
+                },
+                ...state.todos,
+            ],
         })),
         dragTodo: ( id: string | null) => set({ draggedTodo: id }),
         removeTodo: (id: string) => {
