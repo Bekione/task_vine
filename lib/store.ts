@@ -163,6 +163,7 @@ export const useTodoStore = create<State & Actions>()(
                 console.error('Error importing data:', error);
             }
         },
+        clearTodos: () => set({ todos: [] }),
     }),
     {
       name: 'todo-storage',
