@@ -18,7 +18,21 @@ export function TodoColumn({ title, status, todos }: TodoColumnProps) {
     id: status,
   })
 
-  const todoIds = useMemo(() => todos.map(todo => todo.id), [todos])
+  // Sort todos by priority (high -> medium -> low -> none)
+  const sortedTodos = useMemo(() => {
+    const priorityOrder = {
+      high: 0,
+      medium: 1,
+      low: 2,
+      none: 3,
+    };
+
+    return [...todos].sort((a, b) => 
+      priorityOrder[a.priority] - priorityOrder[b.priority]
+    );
+  }, [todos]);
+
+  const todoIds = useMemo(() => sortedTodos.map(todo => todo.id), [sortedTodos]);
 
   return (
     <div className="flex-1 w-full min-w-[300px] flex flex-col">
@@ -35,7 +49,7 @@ export function TodoColumn({ title, status, todos }: TodoColumnProps) {
         <SortableContext items={todoIds} strategy={verticalListSortingStrategy}>
           <div className="h-[calc(100vh-280px)] overflow-y-auto p-4">
             <div className="space-y-4 min-h-full">
-              {todos.map((todo) => (
+              {sortedTodos.map((todo) => (
                 <SortableTodoCard 
                   key={todo.id} 
                   todo={todo}
