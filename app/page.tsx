@@ -16,6 +16,7 @@ import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useSearchParams, useRouter } from "next/navigation";
 import { TodoColumn } from "@/components/todo-column";
 import { AddTodoDialog } from "@/components/add-todo-dialog";
+import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Todo, TodoStatus } from "@/types/todo";
 import { TodoCard } from "@/components/todo-card";
@@ -23,7 +24,6 @@ import { TaskTimer } from "@/components/task-timer";
 import { useTodoStore } from "@/lib/store";
 import { ConfirmationDialog } from "@/components/confirmation-dialog";
 import { useToast } from "@/components/ui/use-toast";
-import { Header } from "@/components/header";
 
 // Create a custom pointer sensor
 class CustomPointerSensor extends PointerSensor {
@@ -124,7 +124,6 @@ function TodoContent() {
               status: todoBackup.status,
               timeSpent: todoBackup.timeSpent
             });
-            toast({ duration: 0 });
           }}
           className="text-sm font-medium underline underline-offset-4 disabled:opacity-50 disabled:cursor-not-allowed"
         >
