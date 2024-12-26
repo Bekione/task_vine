@@ -5,23 +5,29 @@ import { Todo, TodoStatus } from '@/types/todo'
 import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { SortableTodoCard } from './sortable-todo-card'
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
+import { Loader2 } from 'lucide-react'
 
 interface TodoColumnProps {
   title: string
   status: TodoStatus
   todos: Todo[]
+  isLoading?: boolean
+  error?: string | null
 }
 
-export function TodoColumn({ title, status, todos }: TodoColumnProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
+export function TodoColumn({ 
+  title, 
+  status, 
+  todos, 
+  isLoading = false, 
+  error = null 
+}: TodoColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: status,
   })
 
-  // Sort todos by priority (high -> medium -> low -> none)
+  // Sort todos by priority
   const sortedTodos = useMemo(() => {
     const priorityOrder = {
       high: 0,
@@ -48,29 +54,6 @@ export function TodoColumn({ title, status, todos }: TodoColumnProps) {
     }
   };
 
-  // Add loading skeleton
-  if (isLoading) {
-    return (
-      <div className="flex-1 w-full min-w-[300px] animate-pulse">
-        {/* Loading skeleton content */}
-      </div>
-    );
-  }
-
-  // Add error message
-  if (error) {
-    return (
-      <div className="flex-1 w-full min-w-[300px] text-destructive">
-        <p>Error: {error}</p>
-      </div>
-    );
-  }
-
-  // Add memo to prevent unnecessary re-renders
-  const TodoItem = React.memo(({ todo }: { todo: Todo }) => {
-    return <SortableTodoCard key={todo.id} todo={todo} />;
-  });
-
   return (
     <div className="flex-1 w-full min-w-[300px] flex flex-col">
       <h2 className="text-2xl font-space font-bold text-foreground dark:text-white mb-4">
@@ -86,9 +69,18 @@ export function TodoColumn({ title, status, todos }: TodoColumnProps) {
         <SortableContext items={todoIds} strategy={verticalListSortingStrategy}>
           <div className="h-[calc(100vh-280px)] overflow-y-auto p-4">
             <div className="space-y-4 min-h-full overflow-hidden">
-              {sortedTodos.length > 0 ? (
+              {isLoading ? (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : error ? (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 text-center">
+                  <p className="text-destructive font-medium">Something went wrong</p>
+                  <p className="text-sm text-muted-foreground">{error}</p>
+                </div>
+              ) : sortedTodos.length > 0 ? (
                 sortedTodos.map((todo) => (
-                  <TodoItem 
+                  <SortableTodoCard 
                     key={todo.id} 
                     todo={todo}
                   />
