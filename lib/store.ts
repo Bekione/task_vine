@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { nanoid } from "nanoid"
-import { TodoStatus, State, Actions, DEFAULT_TODO_STATUS } from '@/types/todo'
+import { TodoStatus, State, Actions, DEFAULT_TODO_STATUS, PriorityLevel, DEFAULT_PRIORITY } from '@/types/todo'
 
 
 export const useTodoStore = create<State & Actions>()(
@@ -9,7 +9,7 @@ export const useTodoStore = create<State & Actions>()(
     (set, get) => ({
         todos: [],
         draggedTodo: null,
-        addTodo: (title: string, description?: string) => set((state) => ({
+        addTodo: (title: string, description?: string, priority: PriorityLevel = DEFAULT_PRIORITY) => set((state) => ({
             todos: [
                 ...state.todos, 
                 {
@@ -17,6 +17,7 @@ export const useTodoStore = create<State & Actions>()(
                     title, 
                     description, 
                     status: DEFAULT_TODO_STATUS,
+                    priority,
                     createdAt: new Date(),
                     timeSpent: 0,
                     timeLog: []
@@ -55,10 +56,10 @@ export const useTodoStore = create<State & Actions>()(
             };
         }),
         reorderTodo: (newTodos: State['todos']) => set({ todos: newTodos }),
-        editTodo: (id: string, title: string, description?: string) => set((state) => ({
+        editTodo: (id: string, title: string, description?: string, priority?: PriorityLevel) => set((state) => ({
             todos: state.todos.map(todo => 
                 todo.id === id 
-                    ? { ...todo, title, description }
+                    ? { ...todo, title, description, ...(priority && { priority }) }
                     : todo
             )
         })),
@@ -108,6 +109,11 @@ export const useTodoStore = create<State & Actions>()(
                 )
             }))
         },
+        updatePriority: (id: string, priority: PriorityLevel) => set((state) => ({
+            todos: state.todos.map(todo => 
+                todo.id === id ? { ...todo, priority } : todo
+            )
+        })),
     }),
     {
       name: 'todo-storage',
