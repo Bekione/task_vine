@@ -124,7 +124,7 @@ export function AddTodoDialog({ isOpen, onClose }: AddTodoDialogProps) {
               </div>
             </RadioGroup>
           </div>
-          <Button type="submit">
+          <Button type="submit" className='bg-gradient-to-r from-gradient-from to-gradient-to hover:opacity-90 text-white'>
             {editId ? 'Edit Todo' : 'Add Todo'}
           </Button>
         </form>
