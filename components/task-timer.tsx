@@ -79,10 +79,10 @@ export function TaskTimer() {
         aria-label="Toggle task timer"
         variant="outline"
         size="icon"
-        className="fixed bottom-4 right-4 rounded-full h-12 w-12 md:hidden shadow-lg bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+        className="fixed bottom-4 right-4 rounded-full h-12 w-12 md:hidden shadow-lg bg-gradient-to-r from-gradient-from to-gradient-to backdrop-blur supports-[backdrop-filter]:bg-gradient-from/60"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <Timer className="h-6 w-6" />
+        <Timer className="h-6 w-6 text-white" />
       </Button>
 
       {/* Timer Card */}
