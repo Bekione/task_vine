@@ -46,9 +46,27 @@ export function AddTodoDialog({ isOpen, onClose }: AddTodoDialogProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!title.trim()) return
+    
+    if (!title.trim()) {
+      toast({
+        title: "Title required",
+        description: "Please enter a title for your todo",
+        variant: "destructive"
+      })
+      return
+    }
 
     if (editId) {
+      const todoToEdit = todos.find(todo => todo.id === editId)
+      if (todoToEdit && 
+          todoToEdit.title === title.trim() && 
+          todoToEdit.description === description.trim() && 
+          todoToEdit.priority === priority
+      ) {
+        handleClose()
+        return
+      }
+
       editTodo(editId, title, description, priority)
       toast({
         title: "Todo updated",
@@ -56,8 +74,8 @@ export function AddTodoDialog({ isOpen, onClose }: AddTodoDialogProps) {
       })
     } else {
       addTodo({
-        title,
-        description,
+        title: title.trim(),
+        description: description.trim(),
         priority
       })
       toast({
