@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Play, Pause, RotateCcw, Timer, X } from 'lucide-react'
@@ -10,7 +10,9 @@ import { cn } from '@/lib/utils'
 
 export function TaskTimer() {
   const [isOpen, setIsOpen] = useState(false)
-  const todos = useTodoStore(state => state.todos)
+  const todos = useMemo(() => {
+    return useTodoStore.getState().todos.filter(todo => todo.status === 'in-progress')
+  }, [])
   const timer = useTodoStore(state => state.timer)
   const setSelectedTodo = useTodoStore(state => state.setSelectedTodo)
   const setTimerRunning = useTodoStore(state => state.setTimerRunning)
@@ -39,7 +41,15 @@ export function TaskTimer() {
         clearInterval(interval);
       }
     };
-  }, [timer.isRunning, timer.selectedTodoId, timer.currentTime, todos, updateTimeSpent, setCurrentTime, setTimerRunning]);
+  }, [
+    timer.isRunning, 
+    timer.selectedTodoId, 
+    timer.currentTime, 
+    todos, 
+    updateTimeSpent, 
+    setCurrentTime, 
+    setTimerRunning
+  ]);
 
   const toggleTimer = () => {
     if (!timer.selectedTodoId) return;
@@ -68,8 +78,6 @@ export function TaskTimer() {
       </div>
     );
   };
-
-  const inProgressTodos = todos.filter(todo => todo.status === 'in-progress');
 
   return (
     <>
@@ -122,12 +130,12 @@ export function TaskTimer() {
               <SelectValue placeholder="Select an in-progress task to track" />
             </SelectTrigger>
             <SelectContent>
-              {inProgressTodos.length === 0 ? (
+              {todos.length === 0 ? (
                 <div className="p-2 text-center text-muted-foreground">
                   No todo in progress
                 </div>
               ) : (
-                inProgressTodos.map(todo => (
+                todos.map(todo => (
                   <SelectItem key={todo.id} value={todo.id}>
                     {todo.title}
                   </SelectItem>
