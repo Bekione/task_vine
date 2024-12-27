@@ -208,12 +208,13 @@ function TodoContent() {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background transition-colors duration-300 relative">
+    <div className="min-h-screen bg-background transition-colors duration-300 relative flex flex-col">
       <main className="container mx-auto p-8 pb-2 flex flex-col">
         <Suspense fallback={<div>Loading...</div>}>
           <TodoContent />
         </Suspense>
       </main>
+      <div className="mt-auto"></div>
       <Footer />
       <TaskTimer />
     </div>
