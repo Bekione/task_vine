@@ -3,6 +3,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { Analytics } from "@vercel/analytics/react"
 import './globals.css'
 import { Toaster } from "@/components/ui/toaster"
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -88,9 +89,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} dark`}>
       <body className={`min-h-screen ${inter.className}`}>
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+        <ErrorBoundary>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
+        </ErrorBoundary>
         <Toaster />
         <Analytics />
       </body>
