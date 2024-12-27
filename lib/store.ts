@@ -34,30 +34,38 @@ export const useTodoStore = create<State & Actions>()(
         removeTodo: (id: string) => {
             const currentTodos = get().todos
             const newTodos = currentTodos.filter(todo => todo.id !== id)
-            set({ todos: newTodos })
+            
+            if (id === get().timer.selectedTodoId) {
+                set(() => ({
+                    todos: newTodos,
+                    timer: {
+                        selectedTodoId: null,
+                        isRunning: false,
+                        currentTime: 0
+                    }
+                }))
+            } else {
+                set({ todos: newTodos })
+            }
         },
         updateTodo: (id: string, status: TodoStatus) => set((state) => {
             const todo = state.todos.find(t => t.id === id);
             if (!todo) return { todos: state.todos };
 
-            if (id === state.timer.selectedTodoId) {
-                if (status === 'done') {
-                    set(() => ({
-                        timer: {
-                            selectedTodoId: null,
-                            isRunning: false,
-                            currentTime: 0
+            if (id === state.timer.selectedTodoId && todo.status === 'in-progress' && status !== 'in-progress') {
+                return {
+                    todos: state.todos.map(t => {
+                        if (t.id === id) {
+                            return { ...t, status };
                         }
-                    }));
-                } else if (status === 'todo') {
-                    set(() => ({
-                        timer: {
-                            selectedTodoId: null,
-                            isRunning: false,
-                            currentTime: 0
-                        }
-                    }));
-                }
+                        return t;
+                    }),
+                    timer: {
+                        selectedTodoId: null,
+                        isRunning: false,
+                        currentTime: 0
+                    }
+                };
             }
 
             return {
