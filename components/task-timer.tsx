@@ -10,9 +10,11 @@ import { cn } from '@/lib/utils'
 
 export function TaskTimer() {
   const [isOpen, setIsOpen] = useState(false)
-  const todos = useMemo(() => {
-    return useTodoStore.getState().todos.filter(todo => todo.status === 'in-progress')
-  }, [])
+  const todos = useTodoStore(state => state.todos)
+  const inProgressTodos = useMemo(() => 
+    todos.filter(todo => todo.status === 'in-progress'),
+    [todos]
+  )
   const timer = useTodoStore(state => state.timer)
   const setSelectedTodo = useTodoStore(state => state.setSelectedTodo)
   const setTimerRunning = useTodoStore(state => state.setTimerRunning)
@@ -24,7 +26,7 @@ export function TaskTimer() {
     let interval: NodeJS.Timeout | undefined;
 
     if (timer.isRunning && timer.selectedTodoId) {
-      const todo = todos.find(t => t.id === timer.selectedTodoId);
+      const todo = inProgressTodos.find(t => t.id === timer.selectedTodoId);
       if (todo && todo.status === 'in-progress') {
         interval = setInterval(() => {
           const newTime = timer.currentTime + 1;
@@ -45,7 +47,7 @@ export function TaskTimer() {
     timer.isRunning, 
     timer.selectedTodoId, 
     timer.currentTime, 
-    todos, 
+    inProgressTodos, 
     updateTimeSpent, 
     setCurrentTime, 
     setTimerRunning
@@ -130,12 +132,12 @@ export function TaskTimer() {
               <SelectValue placeholder="Select an in-progress task to track" />
             </SelectTrigger>
             <SelectContent>
-              {todos.length === 0 ? (
+              {inProgressTodos.length === 0 ? (
                 <div className="p-2 text-center text-muted-foreground">
                   No todo in progress
                 </div>
               ) : (
-                todos.map(todo => (
+                inProgressTodos.map(todo => (
                   <SelectItem key={todo.id} value={todo.id}>
                     {todo.title}
                   </SelectItem>
