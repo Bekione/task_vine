@@ -7,7 +7,7 @@ export default function Offline() {
       <p className="text-gray-600 mb-4">Please check your internet connection</p>
       <button 
         onClick={() => window.location.reload()} 
-        className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+        className="px-4 py-2 rounded-sm bg-gradient-to-r from-gradient-from to-gradient-to hover:opacity-90 text-white"
       >
         Try again
       </button>
