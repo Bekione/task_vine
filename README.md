@@ -91,6 +91,17 @@ This project is licensed under the MIT License.
 
 Created by Bereket K.
 
+Inspired by [Niklas Ziermann](https://www.youtube.com/@NiklasZiermann)'s tutorial on [freeCodeCamp](https://www.freecodecamp.org/):
+- Tutorial: [Zustand React State Management Course (Simple Redux Alternative)](https://www.youtube.com/watch?v=fZPgBnL2x-Q)
+
+The project has been extended with additional features including:
+- Advanced state management with Zustand
+- Task Timer functionality
+- PWA support
+- Data import/export
+- Theme switching
+- And more...
+
 ## 🌟 Support
 
 Give a ⭐️ if you like this project!
