@@ -30,7 +30,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <h2 className="text-2xl font-bold mb-4">Something went wrong</h2>
           <button 
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+            className="px-4 py-2 bg-gradient-to-r from-gradient-from to-gradient-to hover:opacity-90 text-white rounded-md"
           >
             Try again
           </button>
