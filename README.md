@@ -37,6 +37,7 @@ A modern, feature-rich task management application built with Next.js and Zustan
 - [Next PWA](https://nextjs.org/docs/app/building-your-application/optimizing/offline-and-cache-assets) - PWA Support
 - [TypeScript](https://www.typescriptlang.org/) - Type Safety
 - [Lucide Icons](https://lucide.dev/) - Icons
+- [Vercel](https://vercel.com/) - Deployment & Analytics
 
 ## 🛠️ Installation
 
