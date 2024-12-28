@@ -158,7 +158,7 @@ function TodoContent() {
         onDragEnd={handleDragEnd}
         onDragCancel={handleDragCancel}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="h-[calc(100vh-280px)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <TodoColumn
             title="Todo"
             status="todo"

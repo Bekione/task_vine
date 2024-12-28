@@ -104,14 +104,14 @@ export function TodoColumn({
         className={`flex-1 rounded-lg backdrop-blur-md bg-secondary/50 
           border-2 transition-colors duration-200 shadow-lg
           ${isOver ? "border-primary/50" : "border-border"}
-          shadow-xl`}
+          shadow-xl relative`}
       >
         <SortableContext items={todoIds} strategy={verticalListSortingStrategy}>
           <div 
             ref={scrollContainerRef}
-            className="h-[calc(100vh-280px)] max-h-[500px] overflow-y-auto scroll-smooth"
+            className="absolute inset-0 overflow-y-auto scroll-smooth"
           >
-            <div className="h-full p-4">
+            <div className="min-h-full p-4">
               <div className="space-y-4">
                 {isLoading ? (
                   [1, 2, 3].map((i) => (
