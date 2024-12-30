@@ -84,7 +84,7 @@ export function TodoColumn({
             />
           ))
         ) : (
-          <div className="flex items-center justify-center h-full">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <p className="text-muted-foreground text-sm">
               {getEmptyMessage(status)}
             </p>
@@ -101,7 +101,7 @@ export function TodoColumn({
       </h2>
       <motion.div
         ref={setNodeRef}
-        className={`flex-1 rounded-lg backdrop-blur-md bg-secondary/50 
+        className={`flex-1 min-h-[380px] rounded-lg backdrop-blur-md bg-secondary/50 
           border-2 transition-colors duration-200 shadow-lg
           ${isOver ? "border-primary/50" : "border-border"}
           shadow-xl relative`}
@@ -111,17 +111,17 @@ export function TodoColumn({
             ref={scrollContainerRef}
             className="absolute inset-0 overflow-y-auto scroll-smooth"
           >
-            <div className="min-h-full p-4">
+            <div className="min-h-full p-4 relative">
               <div className="space-y-4">
                 {isLoading ? (
-                  [1, 2, 3].map((i) => (
+                  ['በ', 'ረ', 'ከ', 'ት'].map((i) => (
                     <Skeleton className="h-24 w-full" key={i} />
                   ))
                 ) : (
                   renderContent()
                 )}
               </div>
-              <div className="h-4"></div>
+              <div className="h-2"></div>
             </div>
           </div>
         </SortableContext>
